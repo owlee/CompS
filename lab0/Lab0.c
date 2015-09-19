@@ -14,8 +14,8 @@
 char generateKeyByte();
 void swap(int *, int *);
 
-int main(int argc, char **argv) {
-
+//int main(int argc, char **argv) {
+int main() {
     // Constants
     FILE *keyFile;
     FILE *textFile;
@@ -25,10 +25,12 @@ int main(int argc, char **argv) {
     char T[256];
     char key[256];
     int kLength; //key length
+    char inputChar;
+    char outputChar;
 
-    keyFile = fopen("./keyFile", "r");
-    textFile = fopen("./keyFile", "r");
-    encryptedFile = fopen("./keyFile", "w");
+    keyFile = fopen("./keyFile.txt", "r");
+    textFile = fopen("./textFile.txt", "r");
+    encryptedFile = fopen("./encryptedFile.txt", "w");
 
     assert(keyFile != NULL)
     assert(textFile != NULL)
@@ -36,13 +38,13 @@ int main(int argc, char **argv) {
 
     // store keys into the key array
     kLength=0;
-    while (kLength<256 && (inputChar = fgetc(keyF))!=EOF) {
+    while (kLength<256 && (inputChar = fgetc(keyFile))!=EOF) {
       key[kLength] = inputChar;
       kLength++;
     }
 
-    Klength = 256;
-    for(int i=0; i<Klength; i++) {
+    kLength = 256;
+    for(int i=0; i<kLength; i++) {
         S[i] = i;
         T[i] = key[i % kLength];
     }
@@ -59,12 +61,9 @@ int main(int argc, char **argv) {
         swap(&S[i],&S[j]);
     }
 
-    char inputChar;
-    char outputChar;
-
     // do the generation and XOR
     while ((inputChar = fgetc(textFile))!=EOF) {
-        outputChar = inputChar ^ prevChar;
+        outputChar = inputChar ^ generateKeyByte(S);
         fputc(outputChar, encryptedFile);
         // prevChar = outputChar;
     }
@@ -75,7 +74,6 @@ int main(int argc, char **argv) {
     fclose(encryptedFile);
 
     printf("I have reached the end");
-    return 0;
 }
 
 char generateKeyByte(char s[]) {
