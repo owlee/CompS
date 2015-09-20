@@ -12,10 +12,10 @@
 // void encrypt(char *);
 // void decrypt(char *);
 char generateKeyByte();
-void swap(int *, int *);
+void swap(char *, char *);
 
 //int main(int argc, char **argv) {
-int main() {
+int main(void){
     // Constants
     FILE *keyFile;
     FILE *textFile;
@@ -32,10 +32,10 @@ int main() {
     textFile = fopen("./textFile.txt", "r");
     encryptedFile = fopen("./encryptedFile.txt", "w");
 
-    assert(keyFile != NULL)
-    assert(textFile != NULL)
-    assert(encryptedFile != NULL)
-
+    //assert(keyFile != NULL)
+    //assert(textFile != NULL)
+    //assert(encryptedFile != NULL)
+    
     // store keys into the key array
     kLength=0;
     while (kLength<256 && (inputChar = fgetc(keyFile))!=EOF) {
@@ -76,9 +76,10 @@ int main() {
     printf("I have reached the end");
 }
 
-char generateKeyByte(char s[]) {
+char generateKeyByte(char S[]) {
     static int i=0;
     static int j=0;
+    static int t=0;
     char keyByte;
     i = (i+1) % 256;
     j = (j+S[i]) % 256;
@@ -89,8 +90,8 @@ char generateKeyByte(char s[]) {
     return keyByte = S[t];
 }
 
-void swap(int *a, int *b) {
-   int temp;
+void swap(char *a, char *b ) {
+   char temp;
    temp = *a;
    *a = *b;
    *b = temp;
