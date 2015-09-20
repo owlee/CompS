@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <assert.h>
 
 // void encrypt(char *);
@@ -17,25 +16,20 @@ void swap(char *, char *);
 //int main(int argc, char **argv) {
 int main(void){
     // Constants
-    FILE *keyFile;
-    FILE *textFile;
-    FILE *encryptedFile;
-
-    char S[256];
-    char T[256];
-    char key[256];
+    FILE *keyFile, *textFile, *encryptedFile;
+    char S[256], T[256], key[256];
     int kLength; //key length
-    char inputChar;
-    char outputChar;
+    char inputChar, outputChar;
 
     keyFile = fopen("./keyFile.txt", "r");
     textFile = fopen("./textFile.txt", "r");
     encryptedFile = fopen("./encryptedFile.txt", "w");
 
-    //assert(keyFile != NULL)
-    //assert(textFile != NULL)
-    //assert(encryptedFile != NULL)
-    
+    // Check if files are empty
+    assert(keyFile != NULL);
+    assert(textFile != NULL);
+    assert(encryptedFile != NULL);
+
     // store keys into the key array
     kLength=0;
     while (kLength<256 && (inputChar = fgetc(keyFile))!=EOF) {
@@ -49,15 +43,12 @@ int main(void){
         T[i] = key[i % kLength];
     }
 
-    //swap 2. initial permutation
+    // initial permutation
     char temp;
     int j;
 
     for(int i=0; i<kLength; i++) {
         j = (j+S[i]+T[i]) % kLength;
-        // temp = S[i];
-        // S[i] = T[i];
-        // T[i] = temp;
         swap(&S[i],&S[j]);
     }
 
@@ -65,7 +56,6 @@ int main(void){
     while ((inputChar = fgetc(textFile))!=EOF) {
         outputChar = inputChar ^ generateKeyByte(S);
         fputc(outputChar, encryptedFile);
-        // prevChar = outputChar;
     }
 
      //clean up
@@ -73,14 +63,13 @@ int main(void){
     fclose(textFile);
     fclose(encryptedFile);
 
-    printf("I have reached the end");
+    printf("Encryption is complete!");
 }
 
 char generateKeyByte(char S[]) {
-    static int i=0;
-    static int j=0;
-    static int t=0;
+    int i=0, j=0, t=0;
     char keyByte;
+
     i = (i+1) % 256;
     j = (j+S[i]) % 256;
 
@@ -95,7 +84,4 @@ void swap(char *a, char *b ) {
    temp = *a;
    *a = *b;
    *b = temp;
-
-   printf("Within swap function: a=%d; b=%d\n", *a, *b);
-
 }
