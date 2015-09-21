@@ -25,7 +25,10 @@ int main(void){
     textFile = fopen("./textFile.txt", "r");
     encryptedFile = fopen("./encryptedFile.txt", "w");
 
-    // Check if files are empty
+//    keyFile = fopen("./keyFile.txt", "r");
+//    textFile = fopen("./encryptedFile.txt", "r");
+//    encryptedFile = fopen("./decryptedFile.txt", "w");
+
     assert(keyFile != NULL);
     assert(textFile != NULL);
     assert(encryptedFile != NULL);
