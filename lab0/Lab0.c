@@ -12,30 +12,47 @@
 // void decrypt(char *);
 char generateKeyByte();
 void swap(char *, char *);
+void generate(char*,char*, char*);
 
 //int main(int argc, char **argv) {
 int main(void){
     // Constants
     FILE *keyFile, *textFile, *encryptedFile;
+
+    char* keyF = "./keyFile.txt";
+
+    // Encryption --uncomment
+    char* inputF = "./plainTextFile.txt";
+    char* outputF = "./encryptedFile.txt";
+
+    // Decryption --uncomment
+   // char* inputF = "./encryptedFile.txt";
+   // char* outputF = "./decyptedFile.txt"; 
+
+    // swap keyFile and encryptedFile to do decryption
+    generate(inputF, outputF, keyF);
+
+    printf("Output file has been generated!");
+}
+
+void generate(char* inputF, char* outputF, char* keyF) {
+
+    // Opening the files
+    FILE* inf = fopen(inputF, "r");
+    FILE* outf = fopen(outputF, "w");
+    FILE* keyf = fopen(keyF, "r");
+
     char S[256], T[256], key[256];
     int kLength; //key length
     char inputChar, outputChar;
 
-    keyFile = fopen("./keyFile.txt", "r");
-    textFile = fopen("./textFile.txt", "r");
-    encryptedFile = fopen("./encryptedFile.txt", "w");
-
-//    keyFile = fopen("./keyFile.txt", "r");
-//    textFile = fopen("./encryptedFile.txt", "r");
-//    encryptedFile = fopen("./decryptedFile.txt", "w");
-
-    assert(keyFile != NULL);
-    assert(textFile != NULL);
-    assert(encryptedFile != NULL);
+    assert(inf != NULL);
+    assert(outf != NULL);
+    assert(keyf != NULL);
 
     // store keys into the key array
     kLength=0;
-    while (kLength<256 && (inputChar = fgetc(keyFile))!=EOF) {
+    while (kLength<256 && (inputChar = fgetc(keyf))!=EOF) {
       key[kLength] = inputChar;
       kLength++;
     }
@@ -56,17 +73,15 @@ int main(void){
     }
 
     // do the generation and XOR
-    while ((inputChar = fgetc(textFile))!=EOF) {
+    while ((inputChar = fgetc(inf))!=EOF) {
         outputChar = inputChar ^ generateKeyByte(S);
-        fputc(outputChar, encryptedFile);
+        fputc(outputChar, outf);
     }
 
-     //clean up
-    fclose(keyFile);
-    fclose(textFile);
-    fclose(encryptedFile);
-
-    printf("Encryption is complete!");
+     // clean up
+    fclose(inf);
+    fclose(outf);
+    fclose(keyf);
 }
 
 char generateKeyByte(char S[]) {
