@@ -12,13 +12,11 @@
 // void decrypt(char *);
 char generateKeyByte();
 void swap(char *, char *);
-void generate(char*,char*, char*);
+void generate(char*, char*, char*);
 
 //int main(int argc, char **argv) {
 int main(void){
     // Constants
-    FILE *keyFile, *textFile, *encryptedFile;
-
     char* keyF = "./keyFile.txt";
 
     // Encryption --uncomment
@@ -26,8 +24,8 @@ int main(void){
     char* outputF = "./encryptedFile.txt";
 
     // Decryption --uncomment
-   // char* inputF = "./encryptedFile.txt";
-   // char* outputF = "./decyptedFile.txt"; 
+//    char* inputF = "./encryptedFile.txt";
+//    char* outputF = "./decryptedFile.txt";
 
     // swap keyFile and encryptedFile to do decryption
     generate(inputF, outputF, keyF);
@@ -46,9 +44,9 @@ void generate(char* inputF, char* outputF, char* keyF) {
     int kLength; //key length
     char inputChar, outputChar;
 
+    assert(keyf != NULL);
     assert(inf != NULL);
     assert(outf != NULL);
-    assert(keyf != NULL);
 
     // store keys into the key array
     kLength=0;
@@ -58,18 +56,19 @@ void generate(char* inputF, char* outputF, char* keyF) {
     }
 
     kLength = 256;
-    for(int i=0; i<kLength; i++) {
-        S[i] = i;
-        T[i] = key[i % kLength];
+    int i;
+    for(i=0;i<kLength;i++) {
+      S[i] = i;
+      T[i] = key[i % kLength];
     }
 
     // initial permutation
     char temp;
     int j;
-
-    for(int i=0; i<kLength; i++) {
-        j = (j+S[i]+T[i]) % kLength;
-        swap(&S[i],&S[j]);
+    int i2;
+    for(i2=0;i2<kLength;i2++) {
+      j = (j+S[i2]+T[i2]) % kLength;
+      swap(&S[i2],&S[j]);
     }
 
     // do the generation and XOR
@@ -78,10 +77,12 @@ void generate(char* inputF, char* outputF, char* keyF) {
         fputc(outputChar, outf);
     }
 
-     // clean up
+     //clean up
+    fclose(keyf);
     fclose(inf);
     fclose(outf);
-    fclose(keyf);
+
+    printf("Encryption is complete!");
 }
 
 char generateKeyByte(char S[]) {
