@@ -36,8 +36,23 @@ double rk(double t0, double y0, double h)
   return y0;
 }
 
-int main(void)
+int main (int argc, char *argv[])
 {
-  double val = rk(0, 10, 0.005);
-  printf("I have the following double val: %f", val);
+
+  int count;
+  if (argc > 1)
+  {
+    for (count = 1; count < argc; count++)
+    {
+      printf("argv[%d] = %s\n", count, argv[count]);
+    }
+  }
+  else
+  {
+    printf("The command had no other arguments.\n");
+  }
+  //double val = rk(0, 10, 0.005);
+  //printf("I have the following double val: %f", val);
+
+   return 0;
 }
