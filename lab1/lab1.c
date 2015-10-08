@@ -1,17 +1,26 @@
 #include <stdio.h>
 #include <math.h>
-#include <conio.h>
-
-#define f(x,y)  1 + (y)*(y)
+#include <assert.h>
 
   // Given y0, and h
   // t0 might just be 0.
   // h0 might also just be 0.005
-double rk(int t0, int y0, int n)
+
+//#define f(x,y)  1 + (y)*(y)
+
+double f(double x, double y)
 {
+  return 1 + (y)*(y);
+}
+
+double rk(double t0, double y0, double h)
+{
+  int n = 4;
+  double fi, k1, k2, k3, k4, y1;
   for(; t0<n; t0=t0+h)
   {
     fi = f(t0,y0);
+    printf(" rk: %f", fi);
     k1 = h * fi;
     fi = f(t0 + h/2, y0 + k1/2);
     k2 = h * fi;
@@ -22,10 +31,13 @@ double rk(int t0, int y0, int n)
 
     y1 = y0 + (1/6) * (k1 + 2*k2 + 2*k3 + k4);
     y0=y1;
+    printf(" rk: %f", y1);
   }
+  return y0;
 }
 
-void main()
+int main(void)
 {
-  print "Hello this is lab 1"
+  double val = rk(0, 10, 0.005);
+  printf("I have the following double val: %f", val);
 }
