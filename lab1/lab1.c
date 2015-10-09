@@ -3,31 +3,56 @@
 #include <assert.h>
 #include <stdlib.h>
 
-  // Given y0, and h
-  // t0 might just be 0.
-  // h0 might also just be 0.005
-
-double[] f(double Ti, double Tj, double Rij, double Ci, Wi) {
-
+  // One iteration of sigma
+double fHelper(double Ti, double Tj, double Rij, double Ci) {
+  return (Ti - Tj)/(Rij * Ci);
 }
 
-double rk(double t0, double y0, double h) {
+double[] f(double , int i, double Tj, double Rij, double Ci, Wi) {
+  double sum = 0;
+  int iterF;
+  for(int iterF=0; iterF<=4; iterF++) {
+    double sum =
+
+  }
+}
+
+  // finds the next temperatures by h stepy T(t0 + h)
+double* rk(double* TempArr, double* rcArr, double* t0) {
   int n = 4;
   double fi, k1, k2, k3, k4, y1;
-  for(; t0<n; t0=t0+h) {
-    fi = f(t0,y0);
-    k1 = h * fi;
-    fi = f(t0 + h/2, y0 + k1/2);
-    k2 = h * fi;
-    fi = f(t0 + h/2, y0 + k2/2);
-    k3 = h * fi;
-    fi = f(t0 + h, y0 + k3);
-    k4 = h * fi;
+  double k1[4];
+  double k2[4];
+  double k3[4];
+  double k4[4];
+  double temp_h[4];
+  int iterRk;
 
-    y1 = y0 + (1/6) * (k1 + 2*k2 + 2*k3 + k4);
-    y0=y1;
+  for(iterRk=0; iterRk<n; iterRk++) {
+    fi = f(t0, temp[iterRk][0], temp[iterRk][1], temp[iterRk][2], temp[iterRk][3]);
+    k1[iterRk] = h * fi;
   }
-  return y0;
+
+  for(iterRk=0; iterRk<n; iterRk++) {
+    fi = f(t0 + h/2, temp[iterRk][0] + k1[iterRk]/2, temp[iterRk][1] + k1[iterRk]/2, temp[iterRk][2] + k1[iterRk]/2, temp[iterRk][3] + k1[iterRk]/2);
+    k2[iterRk] = h * fi;
+  }
+
+  for(iterRk=0; iterRk<n; iterRk++) {
+    fi = f(t0 + h/2, temp[iterRk][0] + k1[iterRk]/2, temp[iterRk][1] + k1[iterRk]/2, temp[iterRk][2] + k1[iterRk]/2, temp[iterRk][3] + k1[iterRk]/2);
+    k3[iterRk] = h * fi;
+  }
+
+  for(iterRk=0; iterRk<n; iterRk++) {
+    fi = f(t0 + h, temp[iterRk][0] + k1[iterRk], temp[iterRk][1] + k1[iterRk], temp[iterRk][2] + k1[iterRk], temp[iterRk][3] + k1[iterRk]);
+    k4[iterRk] = h * fi;
+  }
+
+  for(iterRk=0; iterRk<n; iterRk++) {
+    temp_h[iterRk] = temp[0][iterRk] + (1/6) * (k1[iterRk] + 2*k2[iterRk] + 2*k3[iterRk] + k4[iterRk]);
+  }
+
+  return temp_h;
 }
 
 // Creates a 2D matrix (R and C)
