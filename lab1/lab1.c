@@ -3,16 +3,19 @@
 #include <assert.h>
 #include <stdlib.h>
 
+
+
   // Global Variables
-  double** RC[];
+  double RC[];
   double ambient;
 
   // Functions for main
   double* rk(double*, double*, double*);
-  double** getMatrix*(char*);
+  double* getMatrix*(char*);
   double* f(double, double, double, double, double, double);
   double fHelper(double, double, double, double);
   int outputToFile(char*, double, double[], double[]);
+  double age(double);
 
 int main (int argc, char *argv[]) {
   int count;
@@ -44,7 +47,8 @@ int main (int argc, char *argv[]) {
     fclose(ambientF);
   }
 
-  // start parsing. The output file will end up with numRecords of temps and age
+  // start parsing. The output file will end up with numRecords of temps and 
+
   int numRecords = 10;
   int iter1;
   double tempArr[4];
@@ -120,13 +124,12 @@ double* getMatrix(char* fileName) {
   // input one file and return an array
 }
 
-double* f(double t0, double TTarget, double T1, double T2, double T3) {
+double* f(double t0, double TTarget, double T1, double T2, double T3, double T4) {
   assert(rc != null);
   assert(ambient != null);
 
-  // Tamb is global
   double sum = 0;
-
+  double Tamb = T5;
   int iterF;
   double sum += fHelper(TTarget, T1);
   sum += fHelper(TTarget, T2);
@@ -167,3 +170,13 @@ int outputToFile(char* fileName, double t0, double[] tempArr, double[] ageArr) {
 
   return 0;
 }
+
+
+double age(double Temp){
+double E = 0.8;
+double k = 0.00008617;
+double Tamb = 300.0;
+
+return exp(((-E/k)*((1/Temp)-(1/Tamb))));
+}
+
