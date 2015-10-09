@@ -3,10 +3,9 @@
 #include <assert.h>
 #include <stdlib.h>
 
-
-
   // Global Variables
-  double RC[];
+  double R[4][4];
+  double C[4];
   double ambient;
 
   // Functions for main
@@ -47,7 +46,7 @@ int main (int argc, char *argv[]) {
     fclose(ambientF);
   }
 
-  // start parsing. The output file will end up with numRecords of temps and 
+  // start parsing. The output file will end up with numRecords of temps and
 
   int numRecords = 10;
   int iter1;
@@ -171,12 +170,11 @@ int outputToFile(char* fileName, double t0, double[] tempArr, double[] ageArr) {
   return 0;
 }
 
+double age(double Temp) {
+  double E = 0.8;
+  double k = 0.00008617;
+  double Tamb = 300.0;
 
-double age(double Temp){
-double E = 0.8;
-double k = 0.00008617;
-double Tamb = 300.0;
-
-return exp(((-E/k)*((1/Temp)-(1/Tamb))));
+  return exp(((-E/k)*((1/Temp)-(1/Tamb))));
 }
 
