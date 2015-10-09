@@ -1,4 +1,4 @@
-// Reads the input file in plainTextFile.txt,
+/ Reads the input file in plainTextFile.txt,
 // character by character and then ex-ors them
 // with the previous character.  To start things off,
 // we ex-or the initial character with a given input.
