@@ -4,12 +4,12 @@
 #include <stdlib.h>
 
   // Global Variables
-  double RC[];
+  double** RC[];
   double ambient;
 
   // Functions for main
   double* rk(double*, double*, double*);
-  double* getMatrix*(char*);
+  double** getMatrix*(char*);
   double* f(double, double, double, double, double, double);
   double fHelper(double, double, double, double);
   int outputToFile(char*, double, double[], double[]);
@@ -120,12 +120,13 @@ double* getMatrix(char* fileName) {
   // input one file and return an array
 }
 
-double* f(double t0, double TTarget, double T1, double T2, double T3, double T4) {
+double* f(double t0, double TTarget, double T1, double T2, double T3) {
   assert(rc != null);
   assert(ambient != null);
 
+  // Tamb is global
   double sum = 0;
-  double Tamb = T5;
+
   int iterF;
   double sum += fHelper(TTarget, T1);
   sum += fHelper(TTarget, T2);
