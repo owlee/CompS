@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
+#include <stdlib.h>
 
   // Given y0, and h
   // t0 might just be 0.
@@ -38,21 +39,48 @@ double rk(double t0, double y0, double h)
 
 int main (int argc, char *argv[])
 {
-
   int count;
-  if (argc > 1)
-  {
-    for (count = 1; count < argc; count++)
-    {
-      printf("argv[%d] = %s\n", count, argv[count]);
-    }
-  }
-  else
-  {
-    printf("The command had no other arguments.\n");
-  }
-  //double val = rk(0, 10, 0.005);
-  //printf("I have the following double val: %f", val);
+  double ambient;
+  FILE* paramF, powerF, outputF;
 
-   return 0;
+  assert((argc == 3) || (argc == 4))
+
+  // if input is 3. ambient is default. Else, we will use a predefined ambient from file.
+  if(argc == 3) {
+    paramF = fopen(argv[1], "r");
+    powerF = fopen(arg[2], "r");
+    outputF = fopen(arg[3], "w+");
+    ambient = 300;
+
+  } else if(argc == 4) {
+    FILE* ambientF;
+    paramF = fopen(argv[1], "r");
+    powerF = fopen(arg[2], "r");
+    ambientF = fopen(argv[3], "r");
+    outputF = fopen(argv[4], "w+");
+
+    // reads ambient file, adds integer characters and parses it into string with atol
+    char* ambientS;
+    while (ambIter = fgetc(ambientF)!=EOF) {
+      ambientS = ambientS + ambIter;
+    }
+    ambient = atol (ambientS)
+
+    fclose(ambientF);
+  }
+
+  // start parsing. The output file will end up with numRecords of temps and age
+  int numRecords = 10;
+  int iter1;
+  for (iter1=0; i<numRecords; i++) {
+
+  }
+
+  fclose(paramF);
+  fclose(powerF);
+  fclose(outputF);
+  //double val = rk(0, 10, 0.005);
+  printf("I have reached the end of this program.");
+
+  return 0;
 }
