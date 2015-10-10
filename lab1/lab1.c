@@ -145,25 +145,16 @@ double fHelper(double Ti, double Tj, double Rij, double Ci) {
 }
 
   // writes a single line into file
-int outputToFile(char* fileName, double t0, double[] tempArr, double[] ageArr) {
-  assert(fileName != null);
+int outputToFile(char* fileName, double t0, double tempArr[], double ageArr[]){
+  assert(fileName != NULL);
 
   //  1. Compiles results into a string line
   //  2. Writes the string line into the outputFile
   char* outputStr = "";
-  FILE* outputF = fileName;
-
-  int iter;
-  outputStr = strcat(outputStr, t0); // first includes the time
-
-  for(iter=0; iter<4; iter++) {
-    outputStr = strcat(outputStr, " ");
-    outputStr = strcat(outputStr, tempArr[iter2];
-    outputStr = strcat(outputStr, " ");
-    outputStr = strcat(outputStr, ageArr[iter2]);
-  }
-
-  fputs(outputStr, outputF);
+  FILE* outputF = fopen(fileName, "w");
+  
+  fprintf(outputF, "%lf %lf %lf %lf %lf %lf %lf %lf %lf", t0, tempArr[0], ageArr[0], 
+  tempArr[1], ageArr[1], tempArr[2], ageArr[2], tempArr[3], ageArr[3]);
 
   fclose(outputF);
 
