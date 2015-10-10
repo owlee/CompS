@@ -10,11 +10,11 @@
 
   // Functions for main
   double* rk(double*, double*, double*);
-  double* getMatrix*(char*);
   double* f(double, double, double, double, double, double);
-  double fHelper(double, double, double, double);
   int outputToFile(char*, double, double[], double[]);
   double age(double);
+  void setRes(double*);
+  void setCap(double*);
 
 int main (int argc, char *argv[]) {
   int count;
