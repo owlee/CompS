@@ -169,27 +169,52 @@ double age(double Temp) {
   return exp(((-E/k)*((1/Temp)-(1/Tamb))));
 }
 
-     //method for importing parameter values
+     //method for importing Resistor values from paramFile
 
-double** getMatrix(char* fileName){
+double** getRes(char* fileName){
   int i;
   int j;
-
-double** space=malloc(6*sizeof(double*)); 
-for(i=0;i<6;++i)
+char buf[100];
+double** space=malloc(5*sizeof(double*));
+for(i=0;i<5;++i)
 space[i]=malloc(4*sizeof(double));
-  FILE *Rvalues;
+
+  FILE* Rvalues;
   Rvalues=fopen(fileName, "r");
-
- for(i = 0; i<6; i++)
+fgets(buf, 100, Rvalues);
+ for(i = 0; i < 5; i++)
   {
-      for(j = 0; j<4; j++) 
-      {
-    if (!fscanf(Rvalues, "%lf", &space[i][j])) 
-           break;
-  printf("%lf\n",space[i][j]); 
-      }
-
+      for(j = 0; j < 4; j++)
+      {  
+       if (!fscanf(Rvalues, "%lf", &space[i][j]))
+           break;     
+          R[i][j] = space[i][j];
+        }
   }
   fclose(Rvalues);
+}
+
+//METHOD FOR IMPORTING CAPACITOR VALUES from paramFile
+double** getCap(char* fileName){
+  int i;
+  int j;
+double** spaces=malloc(1*sizeof(double*));
+for(i=0;i<1;++i)
+spaces[i]=malloc(4*sizeof(double));
+
+
+  FILE* Cvalues;
+  Cvalues=fopen(fileName, "r");
+ for(i = 0; i < 1; i++)
+  {
+      for(j = 0; j < 4; j++)
+      {
+  
+       if (!fscanf(Cvalues, "%lf", &spaces[i][j]))
+           break;
+     
+          C[i][j] = spaces[i][j];
+        }
+  }
+  fclose(Cvalues);
 }
