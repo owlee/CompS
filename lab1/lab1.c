@@ -153,8 +153,7 @@ int outputToFile(char* fileName, double t0, double tempArr[], double ageArr[]){
   char* outputStr = "";
   FILE* outputF = fopen(fileName, "w");
   
-  fprintf(outputF, "%lf %lf %lf %lf %lf %lf %lf %lf %lf", t0, tempArr[0], ageArr[0], 
-  tempArr[1], ageArr[1], tempArr[2], ageArr[2], tempArr[3], ageArr[3]);
+  fprintf(outputF, "%lf %lf %lf %lf %lf %lf %lf %lf %lf", t0, tempArr[0], ageArr[0], tempArr[1], ageArr[1], tempArr[2], ageArr[2], tempArr[3], ageArr[3]);
 
   fclose(outputF);
 
