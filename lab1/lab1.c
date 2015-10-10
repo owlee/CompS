@@ -6,7 +6,7 @@
 
   // Global Variables
   double R[5][4];
-  double C[1][4];
+  double C[4];
 
   // Functions for main
   double* rk(double*, double*, double*);
@@ -163,24 +163,13 @@ void setRes(char* fileName){
 
 //METHOD FOR IMPORTING CAPACITOR VALUES from paramFile
 void setCap(char* fileName){
-  int i;
-  int j;
-  double** spaces=malloc(1*sizeof(double*));
-  for(i=0;i<1;++i)
-    spaces[i]=malloc(4*sizeof(double));
-
-  FILE* Cvalues;
-  Cvalues=fopen(fileName, "r");
-  for(i = 0; i < 1; i++)
-  {
-    for(j = 0; j < 4; j++)
-    {
-
-      if (!fscanf(Cvalues, "%lf", &spaces[i][j]))
-        break;
-
-      C[i][j] = spaces[i][j];
+  FILE *file = fopen("paramFile.txt", "r");
+    int i=0;
+    double num;
+    while(fscanf(file, "%lf", &num) > 0 && i < 4) {
+        C[i] = num;
+        i++;
     }
-  }
-  fclose(Cvalues);
+    fclose(file);
+
 }
