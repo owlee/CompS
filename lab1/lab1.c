@@ -163,7 +163,7 @@ void setRes(char* fileName){
 
 //METHOD FOR IMPORTING CAPACITOR VALUES from paramFile
 void setCap(char* fileName){
-  FILE *file = fopen("paramFile.txt", "r");
+  FILE *file = fopen(fileName, "r");
     int i=0;
     double num;
     while(fscanf(file, "%lf", &num) > 0 && i < 4) {
