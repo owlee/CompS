@@ -7,7 +7,6 @@
   // Global Variables
   double R[4][4];
   double C[4];
-  double ambient;
 
   // Functions for main
   double* rk(double*, double*, double*);
@@ -82,7 +81,7 @@ int main (int argc, char *argv[]) {
 // FUNCTIONS OUTSIDE OF MAIN
   // finds the next temperatures by h stepy T(t0 + h)
 double rk(int i, double* tempArr, double h) {
-  double k1, k2, k3, k4, T0, T1, T2, T3, next_temp;
+  double k1, k2, k3, k4, T0, y1, y2, y3, next_temp;
 
   T0 = tempArr[i];
 
@@ -93,7 +92,7 @@ double rk(int i, double* tempArr, double h) {
   y2 = T0 + k2 * h/2;
 
   k3 = f(i, y2, tempArr);
-  y3 = T0 + k3 + h
+  y3 = T0 + k3 + h;
 
   k4 = f(i, y3, tempArr);
 
@@ -107,10 +106,10 @@ double f(int i, double T, double* tempArr) {
   int j;
   for(j=0; j<5; j++) {
     if (j != i) {
-      sum += (T - tempArr(j)) / (R[i][j] * C[i]);
+      sum += (T - tempArr[j]) / (R[i][j] * C[i]);
     }
   }
-  sum += w[i]/c[i];
+  sum += W[i]/C[i];
   return sum;
 }
 
@@ -149,7 +148,7 @@ double** getMatrix(char* fileName){
   int i;
   int j;
 
-double** space=malloc(6*sizeof(double*)); 
+double** space=malloc(6*sizeof(double*));
 for(i=0;i<6;++i)
 space[i]=malloc(4*sizeof(double));
   FILE *Rvalues;
@@ -157,11 +156,11 @@ space[i]=malloc(4*sizeof(double));
 
  for(i = 0; i<6; i++)
   {
-      for(j = 0; j<4; j++) 
+      for(j = 0; j<4; j++)
       {
-    if (!fscanf(Rvalues, "%lf", &space[i][j])) 
+    if (!fscanf(Rvalues, "%lf", &space[i][j]))
            break;
-  printf("%lf\n",space[i][j]); 
+  printf("%lf\n",space[i][j]);
       }
 
   }
