@@ -80,68 +80,42 @@ int main (int argc, char *argv[]) {
 
 // FUNCTIONS OUTSIDE OF MAIN
   // finds the next temperatures by h stepy T(t0 + h)
-double* rk(double* TempArr, double* rcArr, double* t0) {
-  int n = 4;
-  double fi, k1, k2, k3, k4, y1;
-  double k1[4];
-  double k2[4];
-  double k3[4];
-  double k4[4];
-  double temp_h[4];
-  int iterRk;
+double rk(int i, double* tempArr, double h) {
+  double k1, k2, k3, k4, T0, T1, T2, T3, next_temp;
 
-  for(iterRk=0; iterRk<n; iterRk++) {
-    fi = f(t0, temp[iterRk][0], temp[iterRk][1], temp[iterRk][2], temp[iterRk][3]);
-    k1[iterRk] = h * fi;
-  }
+  T0 = tempArr[i];
 
-  for(iterRk=0; iterRk<n; iterRk++) {
-    fi = f(t0 + h/2, temp[iterRk][0] + k1[iterRk]/2, temp[iterRk][1] + k1[iterRk]/2, temp[iterRk][2] + k1[iterRk]/2, temp[iterRk][3] + k1[iterRk]/2);
-    k2[iterRk] = h * fi;
-  }
+  k1 = f(i, T0, tempArr);
+  y1 = T0 + k1 * h/2;
 
-  for(iterRk=0; iterRk<n; iterRk++) {
-    fi = f(t0 + h/2, temp[iterRk][0] + k1[iterRk]/2, temp[iterRk][1] + k1[iterRk]/2, temp[iterRk][2] + k1[iterRk]/2, temp[iterRk][3] + k1[iterRk]/2);
-    k3[iterRk] = h * fi;
-  }
+  k2 = f(i, y1, tempArr);
+  y2 = T0 + k2 * h/2;
 
-  for(iterRk=0; iterRk<n; iterRk++) {
-    fi = f(t0 + h, temp[iterRk][0] + k1[iterRk], temp[iterRk][1] + k1[iterRk], temp[iterRk][2] + k1[iterRk], temp[iterRk][3] + k1[iterRk]);
-    k4[iterRk] = h * fi;
-  }
+  k3 = f(i, y2, tempArr);
+  y3 = T0 + k3 + h
 
-  for(iterRk=0; iterRk<n; iterRk++) {
-    temp_h[iterRk] = temp[0][iterRk] + (1/6) * (k1[iterRk] + 2*k2[iterRk] + 2*k3[iterRk] + k4[iterRk]);
-  }
+  k4 = f(i, y3, tempArr);
 
-  return temp_h;
+  next_temp = T0 + (h/6) * (k1 + 2*k2 + 2*k3 + k4);
+
+  return next_temp;
 }
 
+double f(int i, double T, double* tempArr) {
+  double sum = 0;
+  int j;
+  for(j=0; j<5; j++) {
+    if (j != i) {
+      sum += (T - tempArr(j)) / (R[i][j] * C[i]);
+    }
+  }
+  sum += w[i]/c[i];
+  return sum;
+}
 
 // Creates a 2D matrix (R and C)
 double* getMatrix(char* fileName) {
   // input one file and return an array
-}
-
-double* f(double t0, double TTarget, double T1, double T2, double T3, double T4) {
-  assert(rc != null);
-  assert(ambient != null);
-
-  double sum = 0;
-  double Tamb = T5;
-  int iterF;
-  double sum += fHelper(TTarget, T1);
-  sum += fHelper(TTarget, T2);
-  sum += fHelper(TTarget, T3);
-  sum += fHelper(TTarget, T4);
-
-  sum +=
-}
-
-  // One iteration of sigma
-    // arg { temp of curr core, temp of comparing core, thermal resistance between two, and thermal cap of curr core
-double fHelper(double Ti, double Tj, double Rij, double Ci) {
-  return (Ti - Tj)/(Rij * Ci);
 }
 
   // writes a single line into file
@@ -152,7 +126,7 @@ int outputToFile(char* fileName, double t0, double tempArr[], double ageArr[]){
   //  2. Writes the string line into the outputFile
   char* outputStr = "";
   FILE* outputF = fopen(fileName, "w");
-  
+
   fprintf(outputF, "%lf %lf %lf %lf %lf %lf %lf %lf %lf", t0, tempArr[0], ageArr[0], tempArr[1], ageArr[1], tempArr[2], ageArr[2], tempArr[3], ageArr[3]);
 
   fclose(outputF);
