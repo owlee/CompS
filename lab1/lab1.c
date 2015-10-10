@@ -78,7 +78,7 @@ int main (int argc, char *argv[]) {
   return 0;
 }
 
-// FUNCTIONS OUTSIDE OF MAIN
+// FUNCTIONS OUTSIDE OF MAIN()
   // finds the next temperatures by h stepy T(t0 + h)
 double rk(int i, double* tempArr, double h) {
   double k1, k2, k3, k4, T0, y1, y2, y3, next_temp;
@@ -113,11 +113,6 @@ double f(int i, double T, double* tempArr) {
   return sum;
 }
 
-// Creates a 2D matrix (R and C)
-double* getMatrix(char* fileName) {
-  // input one file and return an array
-}
-
   // writes a single line into file
 int outputToFile(char* fileName, double t0, double tempArr[], double ageArr[]){
   assert(fileName != NULL);
@@ -142,33 +137,26 @@ double age(double Temp) {
   return exp(((-E/k)*((1/Temp)-(1/Tamb))));
 }
 
-     //method for importing Resistor values from paramFile
-
+//method for importing Resistor values from paramFile
 double** getRes(char* fileName){
   int i;
   int j;
-<<<<<<< HEAD
-char buf[100];
-double** space=malloc(5*sizeof(double*));
-for(i=0;i<5;++i)
-=======
-
-double** space=malloc(6*sizeof(double*));
-for(i=0;i<6;++i)
->>>>>>> 24189c8b2531c141a329686069af8350989e4770
-space[i]=malloc(4*sizeof(double));
+  char buf[100];
+  double** space=malloc(5*sizeof(double*));
+  for(i=0;i<5;++i)
+    space[i]=malloc(4*sizeof(double));
 
   FILE* Rvalues;
   Rvalues=fopen(fileName, "r");
-fgets(buf, 100, Rvalues);
- for(i = 0; i < 5; i++)
+  fgets(buf, 100, Rvalues);
+  for(i = 0; i < 5; i++)
   {
-      for(j = 0; j < 4; j++)
-      {  
-       if (!fscanf(Rvalues, "%lf", &space[i][j]))
-           break;     
-          R[i][j] = space[i][j];
-        }
+    for(j = 0; j < 4; j++)
+    {
+      if (!fscanf(Rvalues, "%lf", &space[i][j]))
+        break;
+      R[i][j] = space[i][j];
+    }
   }
   fclose(Rvalues);
 }
@@ -177,35 +165,23 @@ fgets(buf, 100, Rvalues);
 double** getCap(char* fileName){
   int i;
   int j;
-double** spaces=malloc(1*sizeof(double*));
-for(i=0;i<1;++i)
-spaces[i]=malloc(4*sizeof(double));
+  double** spaces=malloc(1*sizeof(double*));
+  for(i=0;i<1;++i)
+    spaces[i]=malloc(4*sizeof(double));
 
 
   FILE* Cvalues;
   Cvalues=fopen(fileName, "r");
- for(i = 0; i < 1; i++)
+  for(i = 0; i < 1; i++)
   {
-<<<<<<< HEAD
-      for(j = 0; j < 4; j++)
-      {
-  
-       if (!fscanf(Cvalues, "%lf", &spaces[i][j]))
-           break;
-     
-          C[i][j] = spaces[i][j];
-        }
+    for(j = 0; j < 4; j++)
+    {
+
+      if (!fscanf(Cvalues, "%lf", &spaces[i][j]))
+        break;
+
+      C[i][j] = spaces[i][j];
+    }
   }
   fclose(Cvalues);
-=======
-      for(j = 0; j<4; j++)
-      {
-    if (!fscanf(Rvalues, "%lf", &space[i][j]))
-           break;
-  printf("%lf\n",space[i][j]);
-      }
-
-  }
-  fclose(Rvalues);
->>>>>>> 24189c8b2531c141a329686069af8350989e4770
 }
