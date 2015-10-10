@@ -2,6 +2,7 @@
 #include <math.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <malloc.h>
 
   // Global Variables
   double R[4][4];
@@ -142,3 +143,27 @@ double age(double Temp) {
   return exp(((-E/k)*((1/Temp)-(1/Tamb))));
 }
 
+     //method for importing parameter values
+
+double** getMatrix(char* fileName){
+  int i;
+  int j;
+
+double** space=malloc(6*sizeof(double*)); 
+for(i=0;i<6;++i)
+space[i]=malloc(4*sizeof(double));
+  FILE *Rvalues;
+  Rvalues=fopen(fileName, "r");
+
+ for(i = 0; i<6; i++)
+  {
+      for(j = 0; j<4; j++) 
+      {
+    if (!fscanf(Rvalues, "%lf", &space[i][j])) 
+           break;
+  printf("%lf\n",space[i][j]); 
+      }
+
+  }
+  fclose(Rvalues);
+}
