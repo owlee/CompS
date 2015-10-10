@@ -2,7 +2,6 @@
 #include <math.h>
 #include <assert.h>
 #include <stdlib.h>
-#include <malloc.h>
 
   // Global Variables
   double R[5][4];
@@ -48,7 +47,7 @@ int main (int argc, char *argv[]) {
 
   // start parsing. The output file will end up with numRecords of temps and
 
-  int numRecords = 10;
+  int numRecords = ;
   int iter1;
   double tempArr[4];
   double h = 0.005; // time step
