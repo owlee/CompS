@@ -12,6 +12,7 @@
   double* f(double, double, double, double, double, double);
   int outputToFile(char*, double, double[], double[]);
   double age(double);
+  double ambient;
   void setRes(double*);
   void setCap(double*);
 
@@ -26,7 +27,7 @@ int main (int argc, char *argv[]) {
     paramF = fopen(argv[1], "r");
     powerF = fopen(arg[2], "r");
     outputF = fopen(arg[3], "w+");
-    ambient = 300;
+    ambient = 300.0;
 
   } else if(argc == 4) {
     FILE* ambientF;
@@ -47,19 +48,19 @@ int main (int argc, char *argv[]) {
 
   // start parsing. The output file will end up with numRecords of temps and
 
-  int numRecords = ;
+  int numRecords;
   int iter1;
   double tempArr[4];
   double h = 0.005; // time step
   double t = 0; // Cold start
-
+  double ageArr[4];
   for (iter1=0; i<numRecords; i++) {
 
     // 1. getting the ambient Temperatures
-    tempArr = rk(t, T1, T2, T3, T4);
+    tempArr[i] = rk(t, T1, T2, T3, T4);
 
     // 2. getting the age accelerations
-    ageArr = age(tempArr);
+    ageArr[i] = age(tempArr);
 
     // 3. write results into file
     outputToFile(outputF, t, tempArr, ageArr);
