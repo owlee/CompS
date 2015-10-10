@@ -5,8 +5,8 @@
 #include <malloc.h>
 
   // Global Variables
-  double R[4][4];
-  double C[4];
+  double R[5][4];
+  double C[1][4];
 
   // Functions for main
   double* rk(double*, double*, double*);
@@ -138,7 +138,7 @@ double age(double Temp) {
 }
 
 //method for importing Resistor values from paramFile
-double** getRes(char* fileName){
+void setRes(char* fileName){
   int i;
   int j;
   char buf[100];
@@ -162,13 +162,12 @@ double** getRes(char* fileName){
 }
 
 //METHOD FOR IMPORTING CAPACITOR VALUES from paramFile
-double** getCap(char* fileName){
+void setCap(char* fileName){
   int i;
   int j;
   double** spaces=malloc(1*sizeof(double*));
   for(i=0;i<1;++i)
     spaces[i]=malloc(4*sizeof(double));
-
 
   FILE* Cvalues;
   Cvalues=fopen(fileName, "r");
