@@ -30,7 +30,7 @@ int main (int argc, char *argv[]) {
     paramFilename = argv[1];
     powerFilename = argv[2];
     outputFilename = argv[3];
-    ambient = 300.0;
+    Tamb = 300.0;
 
   } else if(argc == 5) {
     FILE* ambientF;
@@ -135,7 +135,7 @@ double f(int i, double T, double* tempArr) {
   int j;
   for(j=0; j<5; j++) {
     if (j != i) {
-      sum += (T - tempArr[j]) / (R[i][j] * C[0][i]);
+      sum += (T - tempArr[j]) / (R[i][j] * C[i]);
     }
   }
   sum += W[i]/C[i];
