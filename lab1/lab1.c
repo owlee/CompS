@@ -28,8 +28,8 @@ int main (int argc, char *argv[]) {
   assert((argc == 4) || (argc == 5));
   if(argc == 4) {
     paramF = fopen(argv[1], "r");
-    powerF = fopen(arg[2], "r");
-    outputF = fopen(arg[3], "w+");
+    powerF = fopen(argv[2], "r");
+    outputF = fopen(argv[3], "w+");
     ambient = 300.0;
 
   } else if(argc == 5) {
