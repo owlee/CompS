@@ -20,22 +20,22 @@
 
 int main (int argc, char *argv[]) {
   int count;
-  FILE *paramF;
-  FILE *powerF;
+  char *paramFilename;
+  char *powerFilename;
   char *outputFilename;
 
   // SETTING UP AMBIENT AND INPUT FILES
   assert((argc == 4) || (argc == 5));
   if(argc == 4) {
-    paramF = fopen(argv[1], "r");
-    powerF = fopen(argv[2], "r");
+    paramFilename = argv[1];
+    powerFilename = argv[2];
     outputFilename = argv[3];
     ambient = 300.0;
 
   } else if(argc == 5) {
     FILE* ambientF;
-    paramF = fopen(argv[1], "r");
-    powerF = fopen(argv[2], "r");
+    paramFilename = argv[1];
+    powerFilename = argv[2];
     ambientF = fopen(argv[3], "r");
     outputFilename = argv[4];
 
@@ -47,9 +47,9 @@ int main (int argc, char *argv[]) {
   }
 
   // SETTING GLOBAL VARIABLES
-  readpowerF(powerF);
-  setRes(paramF);
-  setCap(paramF);
+  readpowerF(powerFilename);
+  setRes(paramFilename);
+  setCap(paramFilename);
 
   // GETTING NUMBER OF LINES IN  POWERFILE;
   int ch, numLinesPower = 0;
