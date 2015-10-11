@@ -21,7 +21,7 @@ int main (int argc, char *argv[]) {
     paramFilename = argv[1];
     powerFilename = argv[2];
     outputFilename = argv[3];
-    ambient = 300.0;
+    Tamb = 300.0;
 
   } else if(argc == 5) {
     FILE* ambientF;
