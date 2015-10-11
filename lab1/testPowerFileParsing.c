@@ -45,6 +45,17 @@ int main (int argc, char *argv[]) {
   // GETTING NUMBER OF LINES IN  POWERFILE;
   int ch, numLinesPower = 0;
   FILE* powerF = fopen(powerFilename, "r");
+  char buff[256];
+  while (fgets (buff, sizeof(buff), powerF)) {
+    printf("%s", buff);
+    int iter = 0;
+    while(buff[iter] != "\n") {
+      printf(" %c", buff[iter]
+    }
+    printf("\n");
+
+  }
+  printf("\n-------------------------\n");
   do {
     ch = fgetc(powerF);
     if(ch == '\n')
