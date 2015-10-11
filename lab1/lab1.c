@@ -10,8 +10,8 @@
   double Tamb;
 
   // Functions for main
-  double* rk(int i, double*, double);
-  double* f(int, double, double*);
+  double rk(int i, double*, double);
+  double f(int, double, double*);
   int outputToFile(char*, double, double[], double[]);
   double age(double);
   void setRes(char*);
@@ -26,9 +26,9 @@ int main (int argc, char *argv[]) {
 
   // SETTING UP AMBIENT AND INPUT FILES
   assert((argc == 4) || (argc == 5));
+  double amb;
   if(argc == 4) {
-    double amb;
-	paramFilename = argv[1];
+    paramFilename = argv[1];
     powerFilename = argv[2];
     outputFilename = argv[3];
     Tamb = 300.0;
@@ -84,7 +84,9 @@ int main (int argc, char *argv[]) {
     // 1. getting the Temperatures of t + h
     int i; // i represents the core number
     for(i=0; i<4; i++) {
-      tempArr[i] = rk(i, tempArr, h);
+		double* tpoint = (double*)&tempArr[0];
+		
+      tempArr[i] = rk(i, tpoint, h);
     }
 
     // 2. getting the age accelerations
