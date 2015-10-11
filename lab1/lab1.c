@@ -135,7 +135,7 @@ double f(int i, double T, double* tempArr) {
   int j;
   for(j=0; j<5; j++) {
     if (j != i) {
-      sum += (T - tempArr[j]) / (R[i][j] * C[0][i]);
+      sum += (T - tempArr[j]) / (R[i][j] * C[i]);
     }
   }
   sum += W[i]/C[i];
