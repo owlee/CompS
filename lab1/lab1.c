@@ -72,14 +72,17 @@ int main (int argc, char *argv[]) {
   int t = 0; // t = first time at the power
   int iter;
 
-  T0 = Tamb;
+  tempArr[0] = Tamb;
+  tempArr[1] = Tamb;
+  tempArr[2] = Tamb;
+  tempArr[3] = Tamb;
 
   for (iter=0; iter<numLinesPower; iter++) {
 
     // 1. getting the Temperatures of t + h
     int i; // i represents the core number
     for(i=0; i<4; i++) {
-      tempArr[i] = rk(T0, T1, T2, T3, T4);
+      tempArr[i] = rk(i, tempArr, h);
     }
 
     // 2. getting the age accelerations
