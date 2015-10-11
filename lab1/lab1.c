@@ -6,6 +6,7 @@
   // Global Variables
   double R[5][4];
   double C[4];
+  double W[100];
 
   // Functions for main
   double* rk(double*, double*, double*);
@@ -15,12 +16,12 @@
   double ambient;
   void setRes(double*);
   void setCap(double*);
-
+  
 int main (int argc, char *argv[]) {
   int count;
   FILE* paramF, powerF, outputF;
 
-  assert((argc == 3) || (argc == 4))
+  assert((argc == 3) || (argc == 4));
 
   // if input is 3. ambient is default. Else, we will use a predefined ambient from file.
   if(argc == 3) {
@@ -52,15 +53,16 @@ int main (int argc, char *argv[]) {
   int iter1;
   double tempArr[4];
   double h = 0.005; // time step
-  double t = 0; // Cold start
+  double* t = 0; // Cold start
   double ageArr[4];
+  int i = 0;
   for (iter1=0; i<numRecords; i++) {
 
     // 1. getting the ambient Temperatures
     tempArr[i] = rk(t, T1, T2, T3, T4);
 
     // 2. getting the age accelerations
-    ageArr[i] = age(tempArr);
+    ageArr[i] = age(tempArr[i]);
 
     // 3. write results into file
     outputToFile(outputF, t, tempArr, ageArr);
@@ -172,4 +174,16 @@ void setCap(char* fileName){
     }
     fclose(file);
 
+}
+
+//Read Power File 
+void readpowerF(char* fileName){
+  FILE *file = fopen(fileName, "r");
+    int i=0;
+    double num;
+    while(fscanf(file, "%lf", &num) != EOF){
+        W[i] = num;
+        i++;
+    }
+    fclose(file);
 }
