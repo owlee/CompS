@@ -22,14 +22,14 @@ int main (int argc, char *argv[]) {
   int count;
   FILE *paramF;
   FILE *powerF;
-  FILE *outputF;
+  char *outputFilename;
 
   // SETTING UP AMBIENT AND INPUT FILES
   assert((argc == 4) || (argc == 5));
   if(argc == 4) {
     paramF = fopen(argv[1], "r");
     powerF = fopen(argv[2], "r");
-    outputF = fopen(argv[3], "w+");
+    outputFilename = argv[3];
     ambient = 300.0;
 
   } else if(argc == 5) {
@@ -37,7 +37,7 @@ int main (int argc, char *argv[]) {
     paramF = fopen(argv[1], "r");
     powerF = fopen(argv[2], "r");
     ambientF = fopen(argv[3], "r");
-    outputF = fopen(argv[4], "w+");
+    outputFilename = argv[4];
 
     double amb;
     fscanf(ambientF, "%lf", &amb);
@@ -91,7 +91,7 @@ int main (int argc, char *argv[]) {
     }
 
     // 3. write results into file
-    int write_check = outputToFile(outputF, t, tempArr, ageArr);
+    int write_check = outputToFile(outputFilename, t, tempArr, ageArr);
     assert(write_check == 0);
 
     // time steps by h.
@@ -146,12 +146,9 @@ double f(int i, double T, double* tempArr) {
 int outputToFile(char* fileName, double t0, double tempArr[], double ageArr[]){
   assert(fileName != NULL);
 
-  //  1. Compiles results into a string line
-  //  2. Writes the string line into the outputFile
-  char* outputStr = "";
   FILE* outputF = fopen(fileName, "w");
 
-  fprintf(outputF, "%lf %lf %lf %lf %lf %lf %lf %lf %lf", t0, tempArr[0], ageArr[0], tempArr[1], ageArr[1], tempArr[2], ageArr[2], tempArr[3], ageArr[3]);
+  fprintf(outputF, "%lf %lf %lf %lf %lf %lf %lf %lf %lf\n", t0, tempArr[0], ageArr[0], tempArr[1], ageArr[1], tempArr[2], ageArr[2], tempArr[3], ageArr[3]);
 
   fclose(outputF);
 
