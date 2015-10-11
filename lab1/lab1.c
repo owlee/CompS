@@ -197,17 +197,14 @@ void setCap(char* fileName){
         i++;
     }
     fclose(file);
-
 }
 
 //Read Power File
 void readpowerF(char* fileName){
   FILE *file = fopen(fileName, "r");
-    int i=0;
     double num;
     while(fscanf(file, "%lf", &num) != EOF){
         W[i] = num;
-        i++;
     }
     fclose(file);
 }
