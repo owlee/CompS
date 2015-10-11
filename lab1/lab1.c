@@ -24,9 +24,8 @@ int main (int argc, char *argv[]) {
   FILE *powerF;
   FILE *outputF;
 
+  // SETTING UP AMBIENT AND INPUT FILES
   assert((argc == 4) || (argc == 5));
-
-  // if input is 3. ambient is default. Else, we will use a predefined ambient from file.
   if(argc == 4) {
     paramF = fopen(argv[1], "r");
     powerF = fopen(arg[2], "r");
@@ -47,25 +46,48 @@ int main (int argc, char *argv[]) {
     fclose(ambientF);
   }
 
+  // SETTING GLOBAL VARIABLES
+  readpowerF(powerF);
+  setRes(paramF);
+  setCap(paramF);
+
+
+  // GETTING NUMBER OF LINES IN  POWERFILE;
+  int ch, numLinesPower = 0;
+
+  do {
+    ch = fgetc(powerF);
+    if(ch == '\n')
+      numLinesPower++;
+  } while (ch != EOF);
+
+  if(ch != '\n' && numLinesPower != 0)
+    numLinesPower++;
+
   // start parsing. The output file will end up with numRecords of temps and
-
-  int numRecords;
-  int iter1;
-  double tempArr[4];
   double h = 0.005; // time step
-  double* t = 0; // Cold start
+  double T0 = 0; // Cold start
   double ageArr[4];
-  int i = 0;
-  for (iter1=0; i<numRecords; i++) {
+  double tempArr[4];
 
-    // 1. getting the ambient Temperatures
-    tempArr[i] = rk(t, T1, T2, T3, T4);
+  int t = 0; // t = first time at the power
+  int iter;
+  for (iter=0; iter<numLinesPower; iter++) {
+
+    // 1. getting the Temperatures of t + h
+    int i; // i represents the core number
+    for(i=0; i<4; i++) {
+      tempArr[i] = rk(T0, T1, T2, T3, T4);
+    }
 
     // 2. getting the age accelerations
-    ageArr[i] = age(tempArr[i]);
+    for(i=0; i<4 i++) {
+      ageArr[i] = age(tempArr[i]);
+    }
 
     // 3. write results into file
-    outputToFile(outputF, t, tempArr, ageArr);
+    int write_check = outputToFile(outputF, t, tempArr, ageArr);
+    assert(write_check == 0);
 
     // time steps by h.
     t = t + h;

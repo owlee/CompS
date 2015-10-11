@@ -33,20 +33,32 @@ int main(int argc, char *argv[]) {
     ambientF = fopen(argv[3], "r");
     outputF = fopen(argv[4], "w+");
 
-    // reads ambient file, adds integer characters and parses it into string with atol
     fscanf(ambientF, "%lf", &amb);
-    printf("I am the ambient from file: %lf", amb);
 
     ambient = amb;
     fclose(ambientF);
   }
+
+  //testing for reading number of lines in file
+  int ch, numLinesPower = 0;
+
+  do {
+    ch = fgetc(powerF);
+    if(ch == '\n')
+      numLinesPower++;
+  } while (ch != EOF);
+
+  // last line doesn't end with a new line!
+  // but there has to be a line at least before the last line
+  if(ch != '\n' && numLinesPower != 0)
+    numLinesPower++;
+
+  printf("number of lines in powerF = %d\n", numLinesPower);
 
   fclose(paramF);
   fclose(powerF);
   fclose(outputF);
 
   printf("I have reached the end of this program.");
-  printf("The global ambient is: %f", ambient);
-
   return 0;
 }
