@@ -41,7 +41,7 @@ int main (int argc, char *argv[]) {
 
     double amb;
     fscanf(ambientF, "%lf", &amb);
-    ambient = amb;
+    Tamb = amb;
 
     fclose(ambientF);
   }
@@ -71,6 +71,9 @@ int main (int argc, char *argv[]) {
 
   int t = 0; // t = first time at the power
   int iter;
+
+  T0 = Tamb;
+
   for (iter=0; iter<numLinesPower; iter++) {
 
     // 1. getting the Temperatures of t + h
