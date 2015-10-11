@@ -200,8 +200,10 @@ void setCap(char* fileName){
 void readpowerF(char* fileName){
   FILE *file = fopen(fileName, "r");
     double num;
+	int i = 0;
     while(fscanf(file, "%lf", &num) != EOF){
         W[i] = num;
+		i++;
     }
     fclose(file);
 }
