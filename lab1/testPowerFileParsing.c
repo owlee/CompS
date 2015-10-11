@@ -38,13 +38,13 @@ int main (int argc, char *argv[]) {
   }
 
   // SETTING GLOBAL VARIABLES
-  readpowerF(powerFilename);
-  setRes(paramFilename);
-  setCap(paramFilename);
+  //readpowerF(powerFilename);
+  //setRes(paramFilename);
+  //setCap(paramFilename);
 
   // GETTING NUMBER OF LINES IN  POWERFILE;
   int ch, numLinesPower = 0;
-
+  FILE* powerF = fopen(powerFilename, "r");
   do {
     ch = fgetc(powerF);
     if(ch == '\n')
@@ -54,6 +54,6 @@ int main (int argc, char *argv[]) {
   if(ch != '\n' && numLinesPower != 0)
     numLinesPower++;
 
-  printf("number of lines in power file is: %f", inumLinesPower);
+  printf("number of lines in power file is: %d\n", numLinesPower);
 
 }

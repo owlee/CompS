@@ -40,7 +40,7 @@ int main (int argc, char *argv[]) {
     ambientF = fopen(argv[3], "r");
     outputFilename = argv[4];
 
-    
+
     fscanf(ambientF, "%lf", &amb);
     Tamb = amb;
 
@@ -53,6 +53,7 @@ int main (int argc, char *argv[]) {
   setCap(paramFilename);
 
   // GETTING NUMBER OF LINES IN  POWERFILE;
+  FILE *powerF = fopen(powerFilename, "r");
   int ch, numLinesPower = 0;
 
   do {
@@ -98,11 +99,6 @@ int main (int argc, char *argv[]) {
     // time steps by h.
     t = t + h;
   }
-
-  fclose(paramF);
-  fclose(powerF);
-  fclose(outputF);
-
   printf("I have reached the end of this program.");
 
   return 0;
