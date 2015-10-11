@@ -7,6 +7,7 @@
   double R[5][4];
   double C[4];
   double W[100];
+  double Tamb;
 
   // Functions for main
   double* rk(double*, double*, double*);
@@ -16,33 +17,32 @@
   double ambient;
   void setRes(double*);
   void setCap(double*);
-  
+
 int main (int argc, char *argv[]) {
   int count;
-  FILE* paramF, powerF, outputF;
+  FILE *paramF;
+  FILE *powerF;
+  FILE *outputF;
 
-  assert((argc == 3) || (argc == 4));
+  assert((argc == 4) || (argc == 5));
 
   // if input is 3. ambient is default. Else, we will use a predefined ambient from file.
-  if(argc == 3) {
+  if(argc == 4) {
     paramF = fopen(argv[1], "r");
     powerF = fopen(arg[2], "r");
     outputF = fopen(arg[3], "w+");
     ambient = 300.0;
 
-  } else if(argc == 4) {
+  } else if(argc == 5) {
     FILE* ambientF;
     paramF = fopen(argv[1], "r");
-    powerF = fopen(arg[2], "r");
+    powerF = fopen(argv[2], "r");
     ambientF = fopen(argv[3], "r");
     outputF = fopen(argv[4], "w+");
 
-    // reads ambient file, adds integer characters and parses it into string with atol
-    char* ambientS;
-    while (ambIter = fgetc(ambientF)!=EOF) {
-      ambientS = ambientS + ambIter;
-    }
-    ambient = atol (ambientS)
+    double amb;
+    fscanf(ambientF, "%lf", &amb);
+    ambient = amb;
 
     fclose(ambientF);
   }
@@ -176,7 +176,7 @@ void setCap(char* fileName){
 
 }
 
-//Read Power File 
+//Read Power File
 void readpowerF(char* fileName){
   FILE *file = fopen(fileName, "r");
     int i=0;
