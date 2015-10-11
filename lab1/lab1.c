@@ -27,7 +27,8 @@ int main (int argc, char *argv[]) {
   // SETTING UP AMBIENT AND INPUT FILES
   assert((argc == 4) || (argc == 5));
   if(argc == 4) {
-    paramFilename = argv[1];
+    double amb;
+	paramFilename = argv[1];
     powerFilename = argv[2];
     outputFilename = argv[3];
     Tamb = 300.0;
@@ -39,7 +40,7 @@ int main (int argc, char *argv[]) {
     ambientF = fopen(argv[3], "r");
     outputFilename = argv[4];
 
-    double amb;
+    
     fscanf(ambientF, "%lf", &amb);
     Tamb = amb;
 
@@ -86,7 +87,7 @@ int main (int argc, char *argv[]) {
     }
 
     // 2. getting the age accelerations
-    for(i=0; i<4 i++) {
+    for(i=0; i<4; i++) {
       ageArr[i] = age(tempArr[i]);
     }
 
