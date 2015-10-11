@@ -10,13 +10,13 @@
   double Tamb;
 
   // Functions for main
-  double* rk(double*, double*, double*);
-  double* f(double, double, double, double, double, double);
+  double* rk(int i, double*, double);
+  double* f(int, double, double*);
   int outputToFile(char*, double, double[], double[]);
   double age(double);
-  double ambient;
-  void setRes(double*);
-  void setCap(double*);
+  void setRes(char*);
+  void setCap(char*);
+  void readpowerF(char*);
 
 int main (int argc, char *argv[]) {
   int count;
@@ -50,7 +50,6 @@ int main (int argc, char *argv[]) {
   readpowerF(powerF);
   setRes(paramF);
   setCap(paramF);
-
 
   // GETTING NUMBER OF LINES IN  POWERFILE;
   int ch, numLinesPower = 0;
@@ -130,7 +129,7 @@ double f(int i, double T, double* tempArr) {
   int j;
   for(j=0; j<5; j++) {
     if (j != i) {
-      sum += (T - tempArr[j]) / (R[i][j] * C[i]);
+      sum += (T - tempArr[j]) / (R[i][j] * C[0][i]);
     }
   }
   sum += W[i]/C[i];
