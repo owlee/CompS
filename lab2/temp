@@ -1,0 +1,102 @@
+// Author: Shikang Xu; ECE 353 TA
+//
+// // List the full names of ALL group members at the top of your code.
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <assert.h>
+
+#define SINGLE 1
+#define BATCH 0
+#define REG_NUM 32
+
+
+
+#include <stdio.h>
+#include <assert.h>
+#include <assert.h>
+#include <stdlib.h>
+
+  // Global Variables
+  long mips_reg[32];
+
+  // Functions For Main
+  int init_reg(void);
+
+int main (int argc, char *argv[]) {
+  assert(init_reg() == 0); // initialize regs
+  printf(mips_reg[0]);
+  printf($zero);
+}
+
+int init_reg(void) {
+  //mips_reg[0] = 0;
+  long *$zero = &mips_reg[0];
+  long *$0 = &mips_reg[0];
+  long *$al = &mips_reg[1];
+  long *$1  = &mips_reg[1];
+  long *$v0 = &mips_reg[2];
+  long *$2  = &mips_reg[2];
+  long *$v1 = &mips_reg[3];
+  long *$3  = &mips_reg[3];
+  long *$a0 = &mips_reg[4];
+  long *$4  = &mips_reg[4];
+  long *$a1 = &mips_reg[5];
+  long *$5  = &mips_reg[5];
+  long *$a2 = &mips_reg[6];
+  long *$6  = &mips_reg[6];
+  long *$a3 = &mips_reg[7];
+  long *$7  = &mips_reg[7];
+  long *$t0 = &mips_reg[8];
+  long *$8  = &mips_reg[8];
+  long *$t1 = &mips_reg[9];
+  long *$9  = &mips_reg[9];
+  long *$t2 = &mips_reg[10];
+  long *$10 = &mips_reg[10];
+  long *$t3 = &mips_reg[11];
+  long *$11 = &mips_reg[11];
+  long *$t4 = &mips_reg[12];
+  long *$12 = &mips_reg[12];
+  long *$t5 = &mips_reg[13];
+  long *$13 = &mips_reg[13];
+  long *$t6 = &mips_reg[14];
+  long *$14 = &mips_reg[14];
+  long *$t7 = &mips_reg[15];
+  long *$15 = &mips_reg[15];
+  long *$s0 = &mips_reg[16];
+  long *$16 = &mips_reg[16];
+  long *$s1 = &mips_reg[17];
+  long *$17 = &mips_reg[17];
+  long *$s2 = &mips_reg[18];
+  long *$18 = &mips_reg[18];
+  long *$s3 = &mips_reg[19];
+  long *$19 = &mips_reg[19];
+  long *$s4 = &mips_reg[20];
+  long *$20 = &mips_reg[20];
+  long *$s5 = &mips_reg[21];
+  long *$21 = &mips_reg[21];
+  long *$s6 = &mips_reg[22];
+  long *$22 = &mips_reg[22];
+  long *$s7 = &mips_reg[23];
+  long *$23 = &mips_reg[23];
+  long *$t8 = &mips_reg[24];
+  long *$24 = &mips_reg[24];
+  long *$t9 = &mips_reg[25];
+  long *$25 = &mips_reg[25];
+  long *$k0 = &mips_reg[26];
+  long *$26 = &mips_reg[26];
+  long *$k1 = &mips_reg[27];
+  long *$27 = &mips_reg[27];
+  long *$gp = &mips_reg[28];
+  long *$28 = &mips_reg[28];
+  long *$sp = &mips_reg[29];
+  long *$29 = &mips_reg[29];
+  long *$fp = &mips_reg[30];
+  long *$30 = &mips_reg[30];
+  long *$ra = &mips_reg[31];
+  long *$31 = &mips_reg[31];
+
+  return 0;
+}

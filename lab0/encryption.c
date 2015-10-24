@@ -22,8 +22,8 @@ int main(void){
     char* outputF = "./encryptedText.txt";
 
     // Decryption --uncomment
-    // char* inputF = "./encryptedFile.txt";
-    // char* outputF = "./decyptedFile.txt";
+    // char* inputF = "./encryptedText.txt";
+    // char* outputF = "./decyptedText.txt";
 
     // swap keyFile and encryptedFile to do decryption
     generate(inputF, outputF, keyF);
@@ -56,8 +56,10 @@ void generate(char* inputF, char* outputF, char* keyF) {
     kLength = 256;
     int i=0;
     while(i<kLength){
+
         S[i] = i;
         T[i] = key[i % kLength];
+        i++;
     }
 
     // initial permutation
