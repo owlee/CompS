@@ -1,0 +1,4 @@
+Hello this is oscar I am writing a random text inside the text Iteration file to test how one line would look like. I am jusst about to end this line and start a new one so bear with me.
+Hey this is a new line. THe line above is to hsow how long
+one line will look like when I am testing what a C function
+read in will do when I do some tests on it.
