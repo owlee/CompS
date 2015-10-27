@@ -6,7 +6,7 @@
 //Let add = 'a' ; addi = 'i' ; sub = 's' ; mul = 'm' ; lw = 'l' ; sw = 's' ;
 // beq = 'b' ; haltSimulation = h ; for the action attribute of the instruction
 
-Struct Instr{ //Makeshift instruction struct
+struct Instr{ //Makeshift instruction struct
 	char action; //instruction type, see comment list on line 6+7
 	long rs; //value of register when instruction passes through IF stage
 	long rt;
@@ -20,7 +20,7 @@ Struct Instr{ //Makeshift instruction struct
 	int RegWrite;
 }
 
-Struct Latch{
+struct Latch{
 	Instr *instruction; //Points to an instruction struct; currently loaded in 
 	int validBit; //Tells if the instruction is new and ready to be loaded in.
 }
@@ -29,7 +29,7 @@ int main(){ //Test
 //
 }
 
-void MemStage(Latch ExMem){
+void MemStage(struct Latch ExMem){
 	Instr currInstr = ExMem.*instruction; //holds the current instruction stored in input latch
 	if(validCheck(ExMem) == 0){ //Checks if latch has valid data for processing. Ends function/stage when it fails.
 		break;
@@ -51,7 +51,7 @@ void MemStage(Latch ExMem){
 	}
 }
 
-void WBStage(Latch MemWB){
+void WBStage(struct Latch MemWB){
 	Instr currInstr = MemWB.*instruction; //Stores the current instruction stored in input latch
 	if(validCheck(MemWB) == 0) //Checks if latch has valid data for processing.
 		break;
@@ -61,16 +61,19 @@ void WBStage(Latch MemWB){
 			currInstr.writeIntoRegister = currInstr.inputOutput; //The input from the mem stage is written into the Register pointed to by writeIntoRegister pointer.
 }
 
-int validCheck(Latch validLatch){ // Checks for the status of the valid bit so the stage can take in new input.
+int validCheck( struct Latch validLatch){ // Checks for the status of the valid bit so the stage can take in new input.
+	assert(validLatch.validBit == 1 || validLatch.validBit == 0)
 	return validLatch.validBit; // 1 for valid; 0 for invalid.
 }
 
-int invalidateBit(Latch zeroThis){
+int invalidateBit(struct Latch zeroThis){
 	zeroThis.validBit = 0;
+	assert(zeroThis.validBit == 0);
 	return 0;
 }
 
-int validateBit(Latch oneThis){
+int validateBit(struct Latch oneThis){
 	oneThis.validBit = 1;
+	assert(oneThis.validBit == 1);
 	return 1;
 }
