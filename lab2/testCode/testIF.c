@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 struct Instr {
   int regDst;
@@ -11,27 +12,35 @@ struct Instr {
   int memRead;
   int memToReg;
   int regWrite;
-
+  
   char opcode[10], arg0[10], arg1[10], arg2[10];
   long rs, rt, rd;
 };
 
-struct Instr instr_fields[2];
+struct Instr instr_fields[10];
 
 int parseFile(char* in) {
-
+  
   FILE* fp = fopen(in, "r");
   assert(fp!=NULL);
   char delimiters[]=", ;$\n"; // TODO: Maybe add the $ in here to be delimited
-  char buffer[1024];
+  char buffer[40];
   int lineNum=0;
-
+  
   while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+    int i=0;
+    
+    while (buffer[i]) {
+      
+      buffer[i] =   tolower(buffer[i]);
+      i++;
+    }
+    
     strcpy(instr_fields[lineNum].opcode, strtok(buffer,delimiters));
     strcpy(instr_fields[lineNum].arg0, strtok(NULL,delimiters));
     strcpy(instr_fields[lineNum].arg1, strtok(NULL,delimiters));
     strcpy(instr_fields[lineNum].arg2, strtok(NULL,delimiters));
-
+    
     lineNum++;
   }
   fclose(fp);
@@ -52,16 +61,19 @@ struct Instr IF(char* in) {
 
 int main (int argc, char *argv[]) {
   assert(parseFile("./textInstructions.txt")==0);
-
+  
   printf("String : %s\n", instr_fields[0].opcode);
   printf("String : %s\n", instr_fields[0].arg0);
   printf("String : %s\n", instr_fields[0].arg1);
   printf("String : %s\n", instr_fields[0].arg2);
-
+  
   printf("String : %s\n", instr_fields[1].opcode);
   printf("String : %s\n", instr_fields[1].arg0);
   printf("String : %s\n", instr_fields[1].arg1);
   printf("String : %s\n", instr_fields[1].arg2);
-
-
+  
+  printf("String : %s\n", instr_fields[2].opcode);
+  printf("String : %s\n", instr_fields[2].arg0);
+  printf("String : %s\n", instr_fields[2].arg1);
+  printf("String : %s\n", instr_fields[2].arg2);
 }
