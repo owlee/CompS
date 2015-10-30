@@ -1,8 +1,10 @@
+//Currently out of date, check testMEM for current code.
+
+
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
 #include <stdlib.h>
-#include <stdbool.h>
 //Let add = 'a' ; addi = 'i' ; sub = 's' ; mul = 'm' ; lw = 'l' ; sw = 's' ;
 // beq = 'b' ; haltSimulation = h ; for the action attribute of the instruction
 
@@ -10,9 +12,11 @@ struct Instr{ //Makeshift instruction struct
 	char action; //instruction type, see comment list on line 6+7
 	long rs; //value of register when instruction passes through IF stage
 	long rt;
-	long *writeIntoRegister; 
 	long imm;
-	long inputOutput; //Holds the inputs to be used in next stage, holds the output of that stage when it has completed.
+	//register to be written back to  for I-type instructions
+	long *regT;
+	long *regD; //register to be written back to for R-type
+	long product; //Holds the inputs to be used in next stage, holds the output of that stage when it has completed.
 
 	int ALUSrc; //controls
 	int MemWrite;
@@ -39,10 +43,10 @@ void MemStage(struct Latch ExMem){
 		switch(currInstr.action){
 			case 's': //sw case
 				if(currInstr.memWrite == 1) 
-					Mem_Reg[inputOutput] = currInstr.rt;
+					Mem_Reg[product] = currInstr.rt;
 			case 'l': //lw case
 				if(currInstr.memRead == 1)
-					currInstr.inputOutput = Mem_Reg[inputOutput]; //Stores value of memory of input addr into
+					currInstr.product = Mem_Reg[product]; //Stores value of memory of input addr into
 			default:
 				break;
 		}
@@ -57,8 +61,15 @@ void WBStage(struct Latch MemWB){
 		break;
 	else
 		invalidateBit(MemWB);
-		if(currInstr.RegWrite == 1) //Checks if the instruction writes back into the RegFile.
-			currInstr.writeIntoRegister = currInstr.inputOutput; //The input from the mem stage is written into the Register pointed to by writeIntoRegister pointer.
+		if((currInstr.action == 'a') || (currInstr.action == 's') || (currInstr.action == 'i') || (currInstr.action == 'm')){
+			if(currInstr.RegWrite == 1) //Checks if the instruction writes back into the RegFile.
+				currInstr.RegD = currInstr.product; //The input from the mem stage is written into the Register pointed to by writeIntoRegister pointer.
+		}
+		if((currInstr.action == 'l') || (currInstr.action == 'a')){
+			if(currInstr.RegWrite == 1) //Checks if the instruction writes back into the RegFile.
+				currInstr.RegT = currInstr.product; //The input from the mem stage is written into the Register pointed to by writeIntoRegister pointer.
+		}
+	}
 }
 
 int validCheck( struct Latch validLatch){ // Checks for the status of the valid bit so the stage can take in new input.
