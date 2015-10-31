@@ -31,13 +31,13 @@ int main(void) { //Test
 	init_testMem(mem_reg);
 	
 	struct Instr testIns;
-	testIns.func = "lw";
+	strcpy(testIns.func, "lw");
 	testIns.memRead = 1;
 	testIns.memWrite = 0;
 	testIns.product = 99;
 	
 	struct Instr testIns22;
-	testIns.func = "sw";
+	strcpy(testIns22.func, "sw");
 	testIns.memRead = 0;
 	testIns.memWrite = 1;
 	testIns.product = 20;
@@ -104,8 +104,8 @@ int invalidateBit(struct Latch zeroThis){
 }
 
 int validateBit(struct Latch oneThis){
+	assert(oneThis.validBit == 1 || oneThis.validBit == 0);
 	oneThis.validBit = 1;
-	assert(oneThis.validBit == 1);
 	return 1;
 }
 
