@@ -4,24 +4,26 @@
 #include <stdlib.h>
 
 struct Instr {
-  int regDst = 0;
-  int aluSrc = 0;
-  int aluOp = 0;
+  int aluSrc = 0; //Controls
   int memWrite = 0;
   int memRead = 0;
-  int memToReg = 0;
   int regWrite = 0;
 
-  int rs = 0, rt = 0; rd = 0;
+  long *rs = 0, *rt = 0; //Pointers to register values 
+  long *rd = 0; //Pointers to destination of regWrite
+  long imm;
+  long product; //Contains the output of ex/mem stages and inputs of the mem/wb stages
 }
 
 struct Latch {
   // reads when read == 1, set == 0
   //  sets when read == 0, set == 1
   // holds when read == 0, set == 0
-  int read = 0;
-  int set = 0;
-  struct Instr data;
+  //int read = 0;
+  //int set = 0;
+  
+  int validBit;
+  struct Instr *data; //Points to instruction currently held.
 }
 
 struct Instr clkLatch(struct Latch latch, struct Instr instr) {
