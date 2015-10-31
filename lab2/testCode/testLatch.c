@@ -4,15 +4,16 @@
 #include <stdlib.h>
 
 struct Instr {
-  int aluSrc = 0; //Controls
-  int memWrite = 0;
-  int memRead = 0;
-  int regWrite = 0;
-
-  long *rs = 0, *rt = 0; //Pointers to register values 
-  long *rd = 0; //Pointers to destination of regWrite
+  int aluSrc; //Controls
+  int memWrite;
+  int memRead;
+  int regWrite;
+  
+  char func[];
+  long *rs, *rt; //mips_reg data
+  long *rd; //mips_reg writeback destination
   long imm;
-  long product; //Contains the output of ex/mem stages and inputs of the mem/wb stages
+  long product; //value passed along between ex and wb.
 }
 
 struct Latch {
@@ -23,7 +24,7 @@ struct Latch {
   //int set = 0;
   
   int validBit;
-  struct Instr *data; //Points to instruction currently held.
+  struct Instr *data; //instruction currently held
 }
 
 struct Instr clkLatch(struct Latch latch, struct Instr instr) {
