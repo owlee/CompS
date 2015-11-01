@@ -21,8 +21,10 @@ struct Instr {
   int rs, rt, rd;
 };
 
+// GLOBAL VARIABLES
 struct Instr instr_mem[10];
 
+// GLOBAL FUNCTIONS
 struct Instr progScanner(char *);
 int regConverter(char*);
 
@@ -63,7 +65,7 @@ struct Instr progScanner(char* buffer) {
   }
   
   if (tokenSize != 4) {
-    printf("Instruction argument error: expect (4), got %d", tokenSize);
+    printf("Instruction argument error: expect (4), got %d\n", tokenSize);
     exit(0);
   }
   
@@ -72,52 +74,46 @@ struct Instr progScanner(char* buffer) {
   
   token = strtok(sanitize, delimiters2);
 
-  if (strcmp(token, "add") == 0) {
-    
+  if (strcmp(token, "add") == 0) {  // filters for a bad opcode
   } else if (strcmp(token, "addi") == 0) {
-    
   } else if (strcmp(token, "sub") == 0) {
-    
   } else if (strcmp(token, "mul") == 0) {
-    
   } else if (strcmp(token, "beq") == 0) {
-    
   } else if (strcmp(token, "lw") == 0) {
-    
   } else if (strcmp(token, "sw") == 0) {
-    
   } else {
-    printf("The opcode of the instruction is invalid or not supported.");
+    printf("The opcode of the instruction is invalid or not supported.\n");
     exit(0);
   }
   
     // parser
   // opcode
   struct Instr instrObj;
-  strcpy(instrObj.opcode, token);
+  //zeroOutInstr(instrObj);
+  instrObj.opcode = token;
   
   // arg0
-  token = strtok(sanitize, delimiters2);
+  token = strtok(NULL, delimiters2);
   instrObj.arg0 = regConverter(token);
   
   if (strcmp(instrObj.opcode, "sw") == 0) {
     // arg1
-    token = strtok(sanitize, delimiters2);
+    token = strtok(NULL, delimiters2);
     instrObj.arg1 = atoi(token);
     
   } else if (strcmp(instrObj.opcode, "lw") == 0) {
     // arg1
-    token = strtok(sanitize, delimiters2);
+    token = strtok(NULL, delimiters2);
     instrObj.arg1 = atoi(token);
     
   } else {
     // arg1
-    token = strtok(sanitize, delimiters2);
+    token = strtok(NULL, delimiters2);
     instrObj.arg1 = regConverter(token);
   }
   
   // arg2
-  token = strtok(sanitize, delimiters2);
+  token = strtok(NULL, delimiters2);
   instrObj.arg2 = regConverter(token);
   
   return instrObj;
@@ -158,7 +154,7 @@ int regConverter(char* str) {
   else if (strcmp(str, "fp") == 0) { ret = 30; }
   else if (strcmp(str, "ra") == 0) { ret = 31; }
   else {
-    printf("Register name error: %s", str);
+    printf("Register name error: %s\n", str);
     exit(0);
   }
   return ret;
