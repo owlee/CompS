@@ -104,13 +104,13 @@ int main(void) { //Test
 	return 0;
 };
 
-int MemStage(){ //INPUT LATCH: ExMem ; OUTPUT LATCH = MemWB
+void MemStage(){ //INPUT LATCH: ExMem ; OUTPUT LATCH = MemWB
 	struct Instr temp = ExMem.inst;
 	if(ExMem.validBit == 1) //Checks if latch has valid data for processing. Ends function/stage when it fails.
 		ExMem.validBit = 0; //Reads in valid Instruction and then invalidates it.
 		assert(!(temp.memWrite && temp.memRead));
 		if(temp.memWrite == 1)  //sw
-			mem_reg[temp.product] = (uintptr_t)temp.rt;
+			mem_reg[temp.product] = temp.rt;
 		if(temp.memRead == 1)
 			temp.product = mem_reg[temp.product]; //Stores value of memory of input addr into
 		MemWB.inst.product = temp.product; //instruction into output latch
