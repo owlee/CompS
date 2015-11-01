@@ -1,62 +1,86 @@
 void ID(){
 	struct Instr test;
-	if(IFID.valid == 1){
-	test = latchIF.data;	
-	
-	switch(test.opcode){
-		case 0:
+	if(IFID.validBit == 1){
+	test = IFID.data;	
+	if(test.imm > 65535){
+			printf("%s", "Immediate field is out of range");
+			exit(0);
+		}
+	else{
+		if(strcmp(test.opcode, "add") == 0){	
 		test.rd = test.arg0;
 		test.rs = test.arg1;
 		test.rt = test.arg2;
+		test.aluSrc = 0;
+		test.memRead = 0;
+		test.memWrite = 0;
 		test.regWrite = 1;
-		break;
-			
-	    case 1:	
-    	test.rt = test.arg0;
+		}
+	else if(strcmp(test.opcode, "addi") == 0){			
+	    test.rt = test.arg0;
 		test.rs = test.arg1;
 		test.imm = test.arg2;
+		test.memRead = 0;
+		test.memWrite = 0;
 		test.aluSrc = 1;
 		test.regWrite = 1;
-		break;
-		
-		case 2:
+	}
+	else if(strcmp(test.opcode, "sub") == 0){
 		test.rd = test.arg0;
 		test.rs = test.arg1;
 		test.rt = test.arg2;
+		test.aluSrc = 0;
+		test.memRead = 0;
+		test.memWrite = 0;
 		test.regWrite = 1;
+	}
 		
-		case 3:
+	else if(strcmp(test.opcode, "mult") == 0){
 		test.rd = test.arg0;
 		test.rs = test.arg1;
 		test.rt = test.arg2;
+		test.aluSrc = 0;
+		test.memRead = 0;
+		test.memWrite = 0;
 		test.regWrite = 1;
-		break;
+	}
 		
-		case 4:
+	else if(strcmp(test.opcode, "beq") == 0){
 		test.rs = test.arg0;
 		test.rt = test.arg1;
 		test.imm = test.arg2;
-		break;
+		test.aluSrc = 0;
+		test.memRead = 0;
+		test.memWrite = 0;
+		test.regWrite = 0;
+	}
 	
-		case 5:        
+	else if(strcmp(test.opcode, "lw") == 0){     
 		test.rt = test.arg0;
 		test.imm = test.arg1;
 		test.rs = test.arg2;
+		test.memWrite = 0;
 		test.aluSrc = 1;
 		test.memRead = 1;
 		test.regWrite = 1;
-		break;
+	}
 		
-		case 6:
+	else if(strcmp(test.opcode, "sw") == 0){
 		test.rt = test.arg0;
 		test.imm = test.arg1;
 		test.rs = test.arg2;
+		test.memRead = 0;
+		test.regWrite = 0;
 		test.aluSrc = 1;
 		test.memWrite = 1;
-		break;
 	}
-	IFID.valid = 0;
-	IDEX.valid = 1;
+	else{
+		printf("%s", "Invalid function");
+		exit(0);
+	}
+	}
+	IFID.validBit = 0;
+	IDEX.validBit = 1;
 	IDEX.data = test;
 }
 }
