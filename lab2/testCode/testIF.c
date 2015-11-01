@@ -76,22 +76,24 @@ struct Instr IF(char* in, struct Instr instr_fields[]) {
 };
 
 int main (int argc, char *argv[]) {
-  char *textInst = (char*) malloc(30);
+   struct Instr *instr_fields = malloc(sizeof(struct Instr)); 
+   char *textInst = (char*) malloc(30);
   strcpy(textInst, "./textInstructions.txt");
-  
+ assert(parseFile("./textInstructions.txt", instr_fields)==0);
   struct Instr instr_mem[countLine(textInst)];
   
-  printf("Number of lines in file: %i\n", countLine(textInst));
+   printf("Number of lines in file: %i\n", countLine(textInst));
+
+   printf("String : %s\n", instr_fields[0].func);
+   printf("String : %s\n", instr_fields[0].arg0);
+   printf("String : %s\n", instr_fields[0].arg1);
+   printf("String : %s\n", instr_fields[0].arg2);
   
-  //  printf("String : %s\n", instr_fields[0].func);
-  //  printf("String : %s\n", instr_fields[0].arg0);
-  //  printf("String : %s\n", instr_fields[0].arg1);
-  //  printf("String : %s\n", instr_fields[0].arg2);
-  //
-  //  printf("String : %s\n", instr_fields[1].func);
-  //  printf("String : %s\n", instr_fields[1].arg0);
-  //  printf("String : %s\n", instr_fields[1].arg1);
-  //  printf("String : %s\n", instr_fields[1].arg2);
+   //printf("String : %s\n", instr_fields[1].func);
+   //printf("String : %s\n", instr_fields[1].arg0);
+   //printf("String : %s\n", instr_fields[1].arg1);
+   //printf("String : %s\n", instr_fields[1].arg2);
+   free(instr_fields);
   //
   //  printf("String : %s\n", instr_fields[2].func);
   //  printf("String : %s\n", instr_fields[2].arg0);
