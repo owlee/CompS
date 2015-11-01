@@ -58,11 +58,11 @@ int main (int argc, char *argv[]) {
   return 0; //for success
 }
 
-void Instr IF() {
+void IF() {
   //TODO: Dynamically allocate more space for instr_mem like realloc.
   //if lineNum < memNum
   struct Instr instrObj = progScanner(buffer);
-  
+
   IfId.validBit = 1;
   IfId.data = instrObj;
 }
