@@ -14,5 +14,5 @@ void MemStage(){ //INPUT LATCH: ExMem ; OUTPUT LATCH = MemWB
           EXMEM.valid = 0; //Validates the Instruction so that the next stage is able to read in.
           MEMWB.valid = 1;
           MEMWB.data = test;  //instruction into output latch
-	
 	}
+}
