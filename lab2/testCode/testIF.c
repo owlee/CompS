@@ -43,7 +43,7 @@ int main (int argc, char *argv[]) {
   char *textInst = (char*) malloc(30);
   strcpy(textInst, "./textInstructions.txt");
   FILE* fp = fopen(textInst, "r");
-
+  
   assert(fp!=NULL);
   
   // Testing Code
@@ -51,9 +51,8 @@ int main (int argc, char *argv[]) {
     IF();
   }
   
-
   // END test Code
-
+  
   fclose(fp);
   return 0; //for success
 }
@@ -62,7 +61,7 @@ void IF() {
   //TODO: Dynamically allocate more space for instr_mem like realloc.
   //if lineNum < memNum
   struct Instr instrObj = progScanner(buffer);
-
+  
   IfId.validBit = 1;
   IfId.data = &instrObj;
 }
@@ -94,7 +93,7 @@ struct Instr progScanner(char* buffer) {
   char delimiters2[]=" ";
   
   token = strtok(sanitize, delimiters2);
-
+  
   if (strcmp(token, "add") == 0) {  // filters for a bad opcode
   } else if (strcmp(token, "addi") == 0) {
   } else if (strcmp(token, "sub") == 0) {
@@ -107,7 +106,7 @@ struct Instr progScanner(char* buffer) {
     exit(0);
   }
   
-    // parser
+  // parser
   // opcode
   struct Instr instrObj;
   //zeroOutInstr(instrObj);
@@ -185,7 +184,7 @@ int countLine(char *in) {
   FILE *fp = fopen(in, "r");
   int lines = 0;
   char ch;
-
+  
   ch = getc(fp);
   while (ch != EOF) {
     if (ch == '\n') {
@@ -195,4 +194,3 @@ int countLine(char *in) {
   }
   return lines+1;
 }
-
