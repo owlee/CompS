@@ -49,8 +49,8 @@ int main(void) { //Test
 	
 	struct Instr testInsA;
 	testInsA.opcode = add;
-	testInsA.rs = 10;
-	testInsA.rt = 100;
+	testInsA.rs = 3;
+	testInsA.rt = 6;
 	testInsA.imm = 1000;
 	//printf("testInsA.opcode");
 	struct Instr testInsB;
@@ -102,45 +102,23 @@ int ExStage(){
 	if(IDEX.validBit == 1){
 		IDEX.validBit = 0;
 		if(temp.opcode == add)
-			temp.product = temp.rs + temp.rt;
+			temp.product = mips_reg[temp.rs] + mips_reg[temp.rt];
 		else if(temp.opcode == addi)
-			temp.product = temp.rs + temp.imm;
+			temp.product = mips_reg[temp.rs] + temp.imm;
 		else if(temp.opcode == sub)
-			temp.product = temp.rs - temp.rt;
+			temp.product = mips_reg[temp.rs] - mips_reg[temp.rt];
 		else if(temp.opcode == mul)
-			temp.product = temp.rs * temp.rt;
+			temp.product = mips_reg[temp.rs] * mips_reg[temp.rt];
 		else if(temp.opcode == beq){
-			if(temp.imm > 65535){
-				printf("%s", "Immediate field is out of range");
-				exit(0);
-			}
-			else if(temp.imm%4 != 0){
-				printf("%s", "Immediate field not valid byte offset");
-				exit(0);
-			}
-			else{
-				if(temp.rs == temp.rt){
+			if(mips_reg[temp.rs] == mips_reg[temp.rt]){
 				int j = (temp.imm)/4;
 				PC = PC + j;
-				}
 			}
 		}
-		else if(temp.opcode = lw){
-			if((temp.imm%4) != 0){
-				printf("%s", "Immediate field not valid byte offset");
-				exit(0);
-			}
-			else
-				temp.product = temp.rs + temp.imm;
-		}
-		else if(temp.opcode = sw){
-			if((temp.imm%4) != 0){
-				printf("%s", "Immediate field not valid byte offset");
-				exit(0);
-			}
-			else
-				temp.product = temp.rs + temp.imm;
-		}
+		else if(temp.opcode = lw)
+			temp.product = mips_reg[temp.rs] + temp.imm;
+		else if(temp.opcode = sw)
+			temp.product = mips_reg[temp.rs] + temp.imm;
 		else
 			printf("no valid instructions were executed");
 		EXMEM.inst.product = temp.product; //instruction into output latch

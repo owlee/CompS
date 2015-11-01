@@ -13,36 +13,171 @@ struct Instr {
   int memToReg;
   int regWrite;
   
-  char func[10], arg0[10], arg1[10], arg2[10];
-  long rs, rt, rd;
+  // Holder Values to organize
+  int arg0, arg1, arg2;
+  
+  // Acutal Destinations of Instruction
+  char *opcode;
+  int rs, rt, rd, imm;
+  long *temp;
 };
 
-int parseFile(char* in, struct Instr instr_fields[]) {
+struct Latch {
+  int validBit;
+  struct Instr *data; //instruction currently held
+};
+
+// GLOBAL VARIABLES
+struct Instr instr_mem[10];
+struct Latch start, IfId;
+char buffer[40];
+
+// GLOBAL FUNCTIONS
+void IF();
+int countLine(char *);
+struct Instr progScanner(char *);
+int regConverter(char*);
+
+int main (int argc, char *argv[]) {
+  int lineNum = 0;
+  char *textInst = (char*) malloc(30);
+  strcpy(textInst, "./textInstructions.txt");
+  FILE* fp = fopen(textInst, "r");
   
-  FILE* fp = fopen(in, "r");
   assert(fp!=NULL);
   
-  char delimiters[]=", ;$\n"; // TODO: Maybe add the $ in here to be delimited
-  int lineNum=0;
-  int i;
-  char buffer[40];
+  // Testing Code
   while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-    i=0;
-    
-    while (buffer[i]) {
-      buffer[i] =   tolower(buffer[i]);
-      i++;
-    }
-    
-    strcpy(instr_fields[lineNum].func, strtok(buffer,delimiters));
-    strcpy(instr_fields[lineNum].arg0, strtok(NULL,delimiters));
-    strcpy(instr_fields[lineNum].arg1, strtok(NULL,delimiters));
-    strcpy(instr_fields[lineNum].arg2, strtok(NULL,delimiters));
-    
-    lineNum++;
+    IF();
   }
+  
+  // END test Code
+  
   fclose(fp);
-  return 0;
+  return 0; //for success
+}
+
+void IF() {
+  //TODO: Dynamically allocate more space for instr_mem like realloc.
+  //if lineNum < memNum
+  struct Instr instrObj = progScanner(buffer);
+  
+  IfId.validBit = 1;
+  IfId.data = &instrObj;
+}
+
+struct Instr progScanner(char* buffer) {
+  //do initial checks for extra characters (( )) or s and t followed by number
+  
+  // progScanner initially
+  char delimiters[]=", \n$()"; // TODO: Maybe add the $ in here to be delimited
+  char sanitize[40] = "";
+  char* token = strtok(buffer, delimiters);
+  int tokenSize = 0;
+  
+  while (token != '\0') {
+    strcat(sanitize, token);
+    token = strtok(NULL, delimiters);
+    if (token != '\0') {
+      strcat(sanitize, " ");
+    }
+    tokenSize++;
+  }
+  
+  if (tokenSize != 4) {
+    printf("Instruction argument error: expect (4), got %d\n", tokenSize);
+    exit(0);
+  }
+  
+  // regNumberConverter
+  char delimiters2[]=" ";
+  
+  token = strtok(sanitize, delimiters2);
+  
+  if (strcmp(token, "add") == 0) {  // filters for a bad opcode
+  } else if (strcmp(token, "addi") == 0) {
+  } else if (strcmp(token, "sub") == 0) {
+  } else if (strcmp(token, "mul") == 0) {
+  } else if (strcmp(token, "beq") == 0) {
+  } else if (strcmp(token, "lw") == 0) {
+  } else if (strcmp(token, "sw") == 0) {
+  } else {
+    printf("The opcode of the instruction is invalid or not supported.\n");
+    exit(0);
+  }
+  
+  // parser
+  // opcode
+  struct Instr instrObj;
+  //zeroOutInstr(instrObj);
+  instrObj.opcode = token;
+  
+  // arg0
+  token = strtok(NULL, delimiters2);
+  instrObj.arg0 = regConverter(token);
+  
+  if (strcmp(instrObj.opcode, "sw") == 0) {
+    // arg1
+    token = strtok(NULL, delimiters2);
+    instrObj.arg1 = atoi(token);
+    
+  } else if (strcmp(instrObj.opcode, "lw") == 0) {
+    // arg1
+    token = strtok(NULL, delimiters2);
+    instrObj.arg1 = atoi(token);
+    
+  } else {
+    // arg1
+    token = strtok(NULL, delimiters2);
+    instrObj.arg1 = regConverter(token);
+  }
+  
+  // arg2
+  token = strtok(NULL, delimiters2);
+  instrObj.arg2 = regConverter(token);
+  
+  return instrObj;
+}
+
+int regConverter(char* str) {
+  int ret = 0;
+  if (strcmp(str, "zero") == 0) { ret = 0; }
+  else if (strcmp(str, "at") == 0) { ret = 1; }
+  else if (strcmp(str, "v0") == 0) { ret = 2; }
+  else if (strcmp(str, "v1") == 0) { ret = 3; }
+  else if (strcmp(str, "a0") == 0) { ret = 4; }
+  else if (strcmp(str, "a1") == 0) { ret = 5; }
+  else if (strcmp(str, "a2") == 0) { ret = 6; }
+  else if (strcmp(str, "a3") == 0) { ret = 7; }
+  else if (strcmp(str, "t0") == 0) { ret = 8; }
+  else if (strcmp(str, "t1") == 0) { ret = 9; }
+  else if (strcmp(str, "t2") == 0) { ret = 10; }
+  else if (strcmp(str, "t3") == 0) { ret = 11; }
+  else if (strcmp(str, "t4") == 0) { ret = 12; }
+  else if (strcmp(str, "t5") == 0) { ret = 13; }
+  else if (strcmp(str, "t6") == 0) { ret = 14; }
+  else if (strcmp(str, "t7") == 0) { ret = 15; }
+  else if (strcmp(str, "s0") == 0) { ret = 16; }
+  else if (strcmp(str, "s1") == 0) { ret = 17; }
+  else if (strcmp(str, "s2") == 0) { ret = 18; }
+  else if (strcmp(str, "s3") == 0) { ret = 19; }
+  else if (strcmp(str, "s4") == 0) { ret = 20; }
+  else if (strcmp(str, "s5") == 0) { ret = 21; }
+  else if (strcmp(str, "s6") == 0) { ret = 22; }
+  else if (strcmp(str, "s7") == 0) { ret = 23; }
+  else if (strcmp(str, "t8") == 0) { ret = 24; }
+  else if (strcmp(str, "t9") == 0) { ret = 25; }
+  else if (strcmp(str, "k0") == 0) { ret = 26; }
+  else if (strcmp(str, "k1") == 0) { ret = 27; }
+  else if (strcmp(str, "gp") == 0) { ret = 28; }
+  else if (strcmp(str, "sp") == 0) { ret = 29; }
+  else if (strcmp(str, "fp") == 0) { ret = 30; }
+  else if (strcmp(str, "ra") == 0) { ret = 31; }
+  else {
+    printf("Register name error: %s\n", str);
+    exit(0);
+  }
+  return ret;
 }
 
 int countLine(char *in) {
@@ -58,43 +193,4 @@ int countLine(char *in) {
     ch = getc(fp);
   }
   return lines+1;
-}
-
-struct Instr IF(char* in, struct Instr instr_fields[]) {
-  // int i;
-  // for(i=0;i<EOF;i++) {
-  //   if(strcmp("HALTINSTRUCTION", fgets(inputF)) == 0) {
-  //     exit(0);
-  //   }
-  // }
-  assert(parseFile(in, instr_fields)==0);
-  
-  struct Instr nop;
-  return nop;
-  
-  //return newInstr;
-};
-
-int main (int argc, char *argv[]) {
-  char *textInst = (char*) malloc(30);
-  strcpy(textInst, "./textInstructions.txt");
-  
-  struct Instr instr_mem[countLine(textInst)];
-  
-  printf("Number of lines in file: %i\n", countLine(textInst));
-  
-  //  printf("String : %s\n", instr_fields[0].func);
-  //  printf("String : %s\n", instr_fields[0].arg0);
-  //  printf("String : %s\n", instr_fields[0].arg1);
-  //  printf("String : %s\n", instr_fields[0].arg2);
-  //
-  //  printf("String : %s\n", instr_fields[1].func);
-  //  printf("String : %s\n", instr_fields[1].arg0);
-  //  printf("String : %s\n", instr_fields[1].arg1);
-  //  printf("String : %s\n", instr_fields[1].arg2);
-  //
-  //  printf("String : %s\n", instr_fields[2].func);
-  //  printf("String : %s\n", instr_fields[2].arg0);
-  //  printf("String : %s\n", instr_fields[2].arg1);
-  //  printf("String : %s\n", instr_fields[2].arg2);
 }

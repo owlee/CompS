@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
@@ -92,3 +93,17 @@ int init_testMem(long mem[]){
 		mem[i] = i;
 	return 0;
 }
+=======
+void WBStage(){ //struct Latch MemWB
+	struct Instr test;
+	if(MEMWB.valid == 1){ //Checks if latch has valid data for processing.
+	test = MEMWB.data;
+	 if(test.regWrite == 1){//Checks if the Instruction writes back into the RegFile.
+	  
+         mips_reg[test.rd] = test.temp; //The input from the mem stage is written into the Register pointed to by writeIntoRegister pointer.	
+         }
+
+        MEMWB.valid = 0;
+         }
+}
+>>>>>>> 981a04b59358ae6574a7ec7c4ccc3be2c8cfef13
