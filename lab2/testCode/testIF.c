@@ -13,36 +13,75 @@ struct Instr {
   int memToReg;
   int regWrite;
   
-  char func[10], arg0[10], arg1[10], arg2[10];
+  char func[10];
+  long *arg0, *arg1, *arg2;
   long rs, rt, rd;
 };
 
-int parseFile(char* in, struct Instr instr_fields[]) {
+struct Instr instr_mem[10];
+int statusIF;
+
+struct Instr IF(char* buffer, int lineNum) {
+  assert(buffer != NULL);
   
-  FILE* fp = fopen(in, "r");
+  //TODO: Dynamically allocate more space for instr_mem like realloc.
+  //if lineNum < memNum
+  
+  char delimiters[]=", ;\n"; // TODO: Maybe add the $ in here to be delimited
+  char* token;
+  
+  token = strtok(buffer, delimiters);
+  int i;
+  for(i=0; i<8; i++) {
+    if (token != instruction[i])
+  }
+  
+//  token = strtok(buffer, delimiters);
+//  strcpy(instr_mem[lineNum].func, token);
+
+//  token = strtok(NULL, delimiters);
+//  strcpy(instr_mem[lineNum].arg0, token);
+  
+//  token = strtok(NULL, delimiters);
+//  strcpy(instr_mem[lineNum].arg1, token);
+  
+  token = strtok(NULL, delimiters);  //dealing with sw and lw
+  if (token != 0) {
+    strcpy(instr_mem[lineNum].arg2, token);
+  }
+  
+  //counter++;
+  return instr_mem[lineNum];
+  
+  // int i;
+  // for(i=0;i<EOF;i++) {
+  //   if(strcmp("HALTINSTRUCTION", fgets(inputF)) == 0) {
+  //     exit(0);
+  //   }
+  // }
+  
+  
+  //push a nop object through if there is nothing in the args
+}
+
+int main (int argc, char *argv[]) {
+  char *textInst = (char*) malloc(30);
+  strcpy(textInst, "./textInstructions.txt");
+  
+  FILE* fp = fopen(textInst, "r");
   assert(fp!=NULL);
   
-  char delimiters[]=", ;$\n"; // TODO: Maybe add the $ in here to be delimited
-  int lineNum=0;
-  int i;
   char buffer[40];
+  int lineNum = 0;
   while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-    i=0;
-    
-    while (buffer[i]) {
-      buffer[i] =   tolower(buffer[i]);
-      i++;
-    }
-    
-    strcpy(instr_fields[lineNum].func, strtok(buffer,delimiters));
-    strcpy(instr_fields[lineNum].arg0, strtok(NULL,delimiters));
-    strcpy(instr_fields[lineNum].arg1, strtok(NULL,delimiters));
-    strcpy(instr_fields[lineNum].arg2, strtok(NULL,delimiters));
-    
+    IF(buffer, lineNum);
     lineNum++;
   }
+  
   fclose(fp);
-  return 0;
+  return 0; //for success
+  
+  //assert(parseFile(textInst) == 0);
 }
 
 int countLine(char *in) {
@@ -60,41 +99,31 @@ int countLine(char *in) {
   return lines+1;
 }
 
-struct Instr IF(char* in, struct Instr instr_fields[]) {
-  // int i;
-  // for(i=0;i<EOF;i++) {
-  //   if(strcmp("HALTINSTRUCTION", fgets(inputF)) == 0) {
-  //     exit(0);
-  //   }
-  // }
-  assert(parseFile(in, instr_fields)==0);
-  
-  struct Instr nop;
-  return nop;
-  
-  //return newInstr;
-};
-
-int main (int argc, char *argv[]) {
-  char *textInst = (char*) malloc(30);
-  strcpy(textInst, "./textInstructions.txt");
-  
-  struct Instr instr_mem[countLine(textInst)];
-  
-  printf("Number of lines in file: %i\n", countLine(textInst));
-  
-  //  printf("String : %s\n", instr_fields[0].func);
-  //  printf("String : %s\n", instr_fields[0].arg0);
-  //  printf("String : %s\n", instr_fields[0].arg1);
-  //  printf("String : %s\n", instr_fields[0].arg2);
-  //
-  //  printf("String : %s\n", instr_fields[1].func);
-  //  printf("String : %s\n", instr_fields[1].arg0);
-  //  printf("String : %s\n", instr_fields[1].arg1);
-  //  printf("String : %s\n", instr_fields[1].arg2);
-  //
-  //  printf("String : %s\n", instr_fields[2].func);
-  //  printf("String : %s\n", instr_fields[2].arg0);
-  //  printf("String : %s\n", instr_fields[2].arg1);
-  //  printf("String : %s\n", instr_fields[2].arg2);
-}
+//int parseFile(char* in) {
+//
+//  FILE* fp = fopen(in, "r");
+//  assert(fp!=NULL);
+//
+//  char delimiters[]=", ;\n"; // TODO: Maybe add the $ in here to be delimited
+//  int lineNum=0;
+//  char buffer[40];
+//  char* token;
+//  while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+//
+//    strcpy(instr_mem[lineNum].func, strtok(buffer, delimiters));
+//
+//    strcpy(instr_mem[lineNum].arg0, strtok(NULL, delimiters));
+//
+//    strcpy(instr_mem[lineNum].arg1, strtok(NULL, delimiters));
+//
+//    token = strtok(NULL, delimiters);   //dealing with sw and lw
+//    if (token != 0) {
+//      strcpy(instr_mem[lineNum].arg2, token);
+//    }
+//
+//    lineNum++;
+//    //TODO: Dynamically allocate more space for instr_mem like realloc.
+//  }
+//  fclose(fp);
+//  return 0; //for success
+//}
