@@ -64,7 +64,7 @@ void IF() {
   struct Instr instrObj = progScanner(buffer);
 
   IfId.validBit = 1;
-  IfId.data = instrObj;
+  IfId.data = &instrObj;
 }
 
 struct Instr progScanner(char* buffer) {
