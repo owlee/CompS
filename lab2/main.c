@@ -1,9 +1,9 @@
 // Author: Shikang Xu; ECE 353 TA
 
 // List the full names of ALL group members at the top of your code.
+// Calvin Tran
+// Delphine Mweze
 // Oscar Lee
-//
-//
 
 #include <stdio.h>
 #include <stdlib.h>
