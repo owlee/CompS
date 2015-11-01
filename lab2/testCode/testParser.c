@@ -18,7 +18,8 @@ struct Instr {
   
   // Acutal Destinations of Instruction
   char *opcode;
-  int rs, rt, rd;
+  int rs, rt, rd, imm;
+  long *temp;
 };
 
 // GLOBAL VARIABLES
