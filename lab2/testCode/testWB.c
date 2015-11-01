@@ -72,7 +72,7 @@ void main() { //Test
 	printf("Register File at 4 now contains: %d\n", mips_reg[4]); // 69
 }
 
-int WBStage(){ //struct Latch MemWB
+void WBStage(){ //struct Latch MemWB
 	struct Instr temp = MemWB.inst;
 	if(MemWB.validBit == 1) { //Checks if latch has valid data for processing.
 		MemWB.validBit = 0;
