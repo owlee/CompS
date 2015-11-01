@@ -13,14 +13,19 @@ struct Instr {
   int memToReg;
   int regWrite;
   
-  char func[10];
-  long *arg0, *arg1, *arg2;
-  long rs, rt, rd;
+  // Holder Values to organize
+  int arg0, arg1, arg2;
+  
+  // Acutal Destinations of Instruction
+  char *opcode;
+  int rs, rt, rd;
 };
 
 struct Instr instr_mem[10];
 
 struct Instr progScanner(char *);
+
+int getEnum(char* str);
 
 int main (int argc, char *argv[]) {
   char *textInst = (char*) malloc(30);
@@ -65,15 +70,33 @@ struct Instr progScanner(char* buffer) {
   
   // regNumberConverter
   char delimiters2[]=" ";
-  token = strtok(sanitize, delimiters2);
-  enum instructions {add, addi, sub, mult, beq, lw, sw};
-  enum instructions func =
   
-  switch(token){
-      
+  token = strtok(sanitize, delimiters2);
+
+  if (strcmp(token, "add") == 0) {
+    
+  } else if (strcmp(token, "addi") == 0) {
+    
+  } else if (strcmp(token, "sub") == 0) {
+    
+  } else if (strcmp(token, "mul") == 0) {
+    
+  } else if (strcmp(token, "beq") == 0) {
+    
+  } else if (strcmp(token, "lw") == 0) {
+    
+  } else if (strcmp(token, "sw") == 0) {
+    
+  } else {
+    printf("The opcode of the instruction is invalid or not supported.");
+    exit(0);
   }
   
-  if (strcmp(token, ''))
+  struct Instr instrObj;
+  strcpy(instrObj.opcode, token);
+  
+  
+  //if (strcmp(token, ''))
   
   
   
