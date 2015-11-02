@@ -36,13 +36,13 @@ struct Latch {
 };
 
 // GLOBAL VARIABLES
-struct Instr instr_mem[512];  // 512 word size
+char* instr_mem[512];  // 512 word size
 struct Latch IFID, IDEX, EXMEM, MEMWB, haltLatch;
 char buffer[40];
 long mips_reg[REG_NUM];
 long mem_reg[512];
 double ifUtil=0, idUtil=0, exUtil=0, memUtil=0, wbUtil=0;
-int PC=0;
+int PC=0, c, m, n;
 
 // GLOBAL FUNCTIONS
 void IF();
@@ -73,7 +73,6 @@ int main (int argc, char *argv[]) {
   }
   
   //choosing the simulation mode
-  int c,m,n;
   printf("\n");
   if (argc==7) {
     if (strcmp("-s",argv[1])==0){
@@ -108,6 +107,13 @@ int main (int argc, char *argv[]) {
     exit(0);
   }
   
+  // parsing the file
+  int x = 0;
+  while (fgets(buffer, sizeof(buffer), input) != NULL) {
+    instr_mem[x] = buffer;
+    x++;
+  }
+  
   //initialize registers so displays as empty for single mode
   if (sim_mode == 1) {
     for (i=0;i<REG_NUM;i++){
@@ -116,13 +122,11 @@ int main (int argc, char *argv[]) {
   }
   
   // OUR CODE
-  if (sim_mode == 0) {  // batch cyclew
+  if (sim_mode == 0) {  // batch cycle
     
     while (1) {
       if (haltLatch.data.halt == 1) { break; }
       
-      if (fgets(buffer, sizeof(buffer), input) != NULL) {
-      }
       WB();
       MEM();
       EX();
@@ -185,13 +189,15 @@ int main (int argc, char *argv[]) {
 void IF() {
   struct Instr instrObj;
   
-  if (strcmp(buffer, "haltSimulation") == 0) {
+  if (strcmp(instr_mem[PC], "haltSimulation") == 0) {
     instrObj.halt = 1;
     
   } else {
-    instrObj = progScanner(buffer);
+    instrObj = progScanner(instr_mem[PC]);
+    ifUtil+=n;
   }
   
+  PC++;
   IFID.validBit = 1;
   IFID.data = instrObj;
 }
@@ -395,6 +401,7 @@ void ID() {
       }
       IDEX.validBit = 1;
       IDEX.data = test;
+      idUtil+=1;
     }
   }
 }
@@ -413,18 +420,22 @@ void EX(){
     
       if(strcmp(test.opcode, "add")==0){
         test.product = mips_reg[test.rs] + mips_reg[test.rt];
+        exUtil+=n;
       }
       
       else if(strcmp(test.opcode, "addi")==0){
         test.product = mips_reg[test.rs] + test.imm;
+        exUtil+=n;
       }
       
       else if(strcmp(test.opcode, "sub")==0){
         test.product = mips_reg[test.rs] - mips_reg[test.rt];
+        exUtil+=n;
       }
       
       else if(strcmp(test.opcode, "mul")==0){
         test.product = mips_reg[test.rs] * mips_reg[test.rt];
+        exUtil+=m;
       }
       
       else if(strcmp(test.opcode, "beq")==0){
@@ -434,7 +445,8 @@ void EX(){
         }
         else if(mips_reg[test.rs] == mips_reg[test.rt]){
           int j = (test.imm)/(long)4;
-          PC = PC + j;
+          PC = PC + j + 1;
+          exUtil+=n;
         }
       }
       
@@ -445,6 +457,7 @@ void EX(){
         }
         else {
           test.product = mips_reg[mips_reg[test.rs]] + (test.imm/(long)4);
+          exUtil+=n;
         }
       }
       else if(strcmp(test.opcode, "sw")==0){
@@ -454,6 +467,7 @@ void EX(){
         }
         else{
           test.product = mips_reg[test.rs] + (test.imm/(long)4);
+          exUtil+=n;
         }
       }
       else{
@@ -483,11 +497,13 @@ void MEM(){ //INPUT LATCH: EXMEM ; OUTPUT LATCH = MEMWB
       if(temp.memWrite == 1) {  //sw
         assert(temp.memRead == 0);
         mem_reg[temp.product%512] = mips_reg[temp.rt];
+        memUtil+=c;
       
       } else if(temp.memRead == 1) { //lw
         assert(temp.memWrite == 0);
         long holder = mem_reg[temp.product%512];
         temp.product = holder; //memory value to be used in WB.
+        memUtil+=c;
       }
     
       MEMWB.data = temp; //push instr into output latch
@@ -507,6 +523,7 @@ void WB(){ //struct Latch MEMWB
     } else {
       if (temp.regWrite == 1) //valid to change mips_reg
         mips_reg[temp.rd] = temp.product; //input from Mem written into destinate mips_reg
+        wbUtil++;
     }
   }
 }
