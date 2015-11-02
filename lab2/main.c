@@ -119,16 +119,10 @@ int main (int argc, char *argv[]) {
   if (sim_mode == 0) {  // batch cyclew
     
     while (1) {
+      if (haltLatch.data.halt == 1) { break; }
       
-      if(fgets(buffer, sizeof(buffer), input) == NULL) {
-        printf("Encountered an EOF error: Is haltSimulation present?\n");
-        exit(0);
+      if (fgets(buffer, sizeof(buffer), input) != NULL) {
       }
-      
-      if(haltLatch.data.halt == 1) {  //checks for halt simulation
-        break;
-      }
-      
       WB();
       MEM();
       EX();
@@ -190,7 +184,8 @@ int main (int argc, char *argv[]) {
 
 void IF() {
   struct Instr instrObj;
-  if (strcmp(buffer, "haltSimulation")) {
+  
+  if (strcmp(buffer, "haltSimulation") == 0) {
     instrObj.halt = 1;
     
   } else {
