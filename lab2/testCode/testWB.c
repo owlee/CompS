@@ -26,7 +26,7 @@ struct Instr{ //Makeshift Instruction struct
 };
 
 struct Latch {
-	struct Instr inst; //Points to an Instruction struct; currently loaded in 
+	struct Instr data; //Points to an Instruction struct; currently loaded in 
 	int validBit; //if the Instruction is new and ready to be loaded in.
 };
 struct Latch MemWB;
@@ -54,27 +54,27 @@ void main() { //Test
 	
 	printf("Register File at 4 initially contains: %d\n", mips_reg[4]); // expect 5
 	
-	MemWB.inst = testInsA;
+	MemWB.data = testInsA;
 	MemWB.validBit = 1;
-	printf("The input latch has recieved an input of: %d\n", MemWB.inst.product); //99
+	printf("The input latch has recieved an input of: %d\n", MemWB.data.product); //99
 	WBStage(MemWB);
 	printf("Register File at 4 now contains: %d\n", mips_reg[4]); // 99
 	
-	MemWB.inst = testInsB;
+	MemWB.data = testInsB;
 	MemWB.validBit = 1;
-	printf("The input latch has recieved an input of: %d\n", MemWB.inst.product); //20
+	printf("The input latch has recieved an input of: %d\n", MemWB.data.product); //20
 	WBStage(MemWB);
 	printf("Register File at 4 now contains: %d\n", mips_reg[4]); // still 99
 	
-	MemWB.inst = testInsC;
+	MemWB.data = testInsC;
 	MemWB.validBit = 1;
-	printf("The input latch has recieved an input of: %d\n", MemWB.inst.product); //69
+	printf("The input latch has recieved an input of: %d\n", MemWB.data.product); //69
 	WBStage(MemWB);
 	printf("Register File at 4 now contains: %d\n", mips_reg[4]); // 69
 }
 
 int WBStage(){ //struct Latch MemWB
-	struct Instr temp = MemWB.inst;
+	struct Instr temp = MemWB.data;
 	if(MemWB.validBit == 1) { //Checks if latch has valid data for processing.
 		MemWB.validBit = 0;
 		if(temp.regWrite == 1) //Checks if the Instruction writes back into the RegFile.
@@ -92,18 +92,5 @@ int init_testMem(long mem[]){
 	for(i = 0; i < 256; i++)
 		mem[i] = i;
 	return 0;
-}
-
-void WBStage(){ //struct Latch MemWB
-	struct Instr test;
-	if(MEMWB.valid == 1){ //Checks if latch has valid data for processing.
-	test = MEMWB.data;
-	 if(test.regWrite == 1){//Checks if the Instruction writes back into the RegFile.
-	  
-         mips_reg[test.rd] = test.product; //The input from the mem stage is written into the Register pointed to by writeIntoRegister pointer.	
-         }
-
-        MEMWB.valid = 0;
-         }
 }
 
