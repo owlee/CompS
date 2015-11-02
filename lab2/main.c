@@ -116,7 +116,16 @@ int main (int argc, char *argv[]) {
   assert(fp!=NULL);
   
   // OUR CODE
-  if (sim_mode == 0) {  // batch cycle
+  if (sim_mode == 0) {  // batch cyclew
+    
+    while (fgets(buffer, sizeof(buffer), input) != NULL) {
+      //WB();
+      //MEM();
+      //EX();
+      //ID();
+      IF();
+    }
+    
     // ----- Code 3 -----
     // Add the following code to the end of the simulation,
     // to output statistics in batch mode
@@ -134,24 +143,32 @@ int main (int argc, char *argv[]) {
     
   } else {  // single cycle
     
-    // ----- Code 2 -----
-    // The following code will output the register
-    // value to screen at every cycle and wait for the ENTER key
-    // to be pressed; this will make it proceed to the next cycle
-    
-    printf("cycle: %ld ",sim_cycle);
-    if(sim_mode==1){
-      for (i=1;i<REG_NUM;i++){
-        printf("%ld  ",mips_reg[i]);
+    while (fgets(buffer, sizeof(buffer), input) != NULL) {  // maybe && status == 1
+      // ----- Code 2 -----
+      // The following code will output the register
+      // value to screen at every cycle and wait for the ENTER key
+      // to be pressed; this will make it proceed to the next cycle
+      
+      printf("cycle: %ld ",sim_cycle);
+      if(sim_mode==1){
+        for (i=1;i<REG_NUM;i++){
+          printf("%ld  ",mips_reg[i]);
+        }
       }
+      
+      printf("%ld\n",pgm_c);
+      pgm_c+=4;
+      sim_cycle+=1;
+      test_counter++;
+      printf("press ENTER to continue\n");
+      while (getchar() != '\n');
+      
+      //WB();
+      //MEM();
+      //EX();
+      //ID();
+      IF();
     }
-    
-    printf("%ld\n",pgm_c);
-    pgm_c+=4;
-    sim_cycle+=1;
-    test_counter++;
-    printf("press ENTER to continue\n");
-    while (getchar() != '\n');
     
   }
   
