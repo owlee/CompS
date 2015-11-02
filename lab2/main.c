@@ -189,9 +189,13 @@ int main (int argc, char *argv[]) {
 }
 
 void IF() {
-  //TODO: Dynamically allocate more space for instr_mem like realloc.
-  //if lineNum < memNum
-  struct Instr instrObj = progScanner(buffer);
+  struct Instr instrObj;
+  if (strcmp(buffer, "haltSimulation")) {
+    instrObj.halt = 1;
+    
+  } else {
+    instrObj = progScanner(buffer);
+  }
   
   IFID.validBit = 1;
   IFID.data = instrObj;
@@ -315,81 +319,88 @@ int regConverter(char* str) {
 }
 
 void ID() {
-  if(IFID.validBit == 1){
+  if (IFID.validBit == 1){
     struct Instr test = IFID.data;
-    if(test.imm > 65535){
-      printf("%s", "Immediate field is out of range");
-      exit(0);
-    }
-    
-    if(strcmp(test.opcode, "add") == 0){
-      test.rd = test.arg0;
-      test.rs = test.arg1;
-      test.rt = test.arg2;
-      test.memRead = 0;
-      test.memWrite = 0;
-      test.regWrite = 1;
-    }
-    else if(strcmp(test.opcode, "addi") == 0){
-      test.rd = test.arg0;
-      test.rs = test.arg1;
-      test.imm = test.arg2;
-      test.memRead = 0;
-      test.memWrite = 0;
-      test.regWrite = 1;
-    }
-    else if(strcmp(test.opcode, "sub") == 0){
-      test.rd = test.arg0;
-      test.rs = test.arg1;
-      test.rt = test.arg2;
-      test.memRead = 0;
-      test.memWrite = 0;
-      test.regWrite = 1;
-    }
-    
-    else if(strcmp(test.opcode, "mul") == 0){
-      test.rd = test.arg0;
-      test.rs = test.arg1;
-      test.rt = test.arg2;
-      test.memRead = 0;
-      test.memWrite = 0;
-      test.regWrite = 1;
-    }
-    
-    else if(strcmp(test.opcode, "beq") == 0){
-      test.rs = test.arg0;
-      test.rt = test.arg1;
-      test.imm = test.arg2;
-      test.memRead = 0;
-      test.memWrite = 0;
-      test.regWrite = 0;
-    }
-    
-    else if(strcmp(test.opcode, "lw") == 0){
-      test.rd = test.arg0;
-      test.imm = test.arg1;
-      test.rs = test.arg2;
-      test.memWrite = 0;
-      test.memRead = 1;
-      test.regWrite = 1;
-    }
-    
-    else if(strcmp(test.opcode, "sw") == 0){
-      test.rt = test.arg0;
-      test.imm = test.arg1;
-      test.rs = test.arg2;
-      test.memRead = 0;
-      test.regWrite = 0;
-      test.memWrite = 1;
-    }
-    else{
-      printf("%s", "Invalid function");
-      exit(0);
-    }
-    
     IFID.validBit = 0;
-    IDEX.validBit = 1;
-    IDEX.data = test;
+    
+    if (test.halt == 1) { // halt cleanup
+      IDEX.data = test;
+      IDEX.validBit = 1;
+      
+    } else {
+        
+      if(test.imm > 65535){
+        printf("%s", "Immediate field is out of range");
+        exit(0);
+      }
+      
+      if(strcmp(test.opcode, "add") == 0){
+        test.rd = test.arg0;
+        test.rs = test.arg1;
+        test.rt = test.arg2;
+        test.memRead = 0;
+        test.memWrite = 0;
+        test.regWrite = 1;
+      }
+      else if(strcmp(test.opcode, "addi") == 0){
+        test.rd = test.arg0;
+        test.rs = test.arg1;
+        test.imm = test.arg2;
+        test.memRead = 0;
+        test.memWrite = 0;
+        test.regWrite = 1;
+      }
+      else if(strcmp(test.opcode, "sub") == 0){
+        test.rd = test.arg0;
+        test.rs = test.arg1;
+        test.rt = test.arg2;
+        test.memRead = 0;
+        test.memWrite = 0;
+        test.regWrite = 1;
+      }
+      
+      else if(strcmp(test.opcode, "mul") == 0){
+        test.rd = test.arg0;
+        test.rs = test.arg1;
+        test.rt = test.arg2;
+        test.memRead = 0;
+        test.memWrite = 0;
+        test.regWrite = 1;
+      }
+      
+      else if(strcmp(test.opcode, "beq") == 0){
+        test.rs = test.arg0;
+        test.rt = test.arg1;
+        test.imm = test.arg2;
+        test.memRead = 0;
+        test.memWrite = 0;
+        test.regWrite = 0;
+      }
+      
+      else if(strcmp(test.opcode, "lw") == 0){
+        test.rd = test.arg0;
+        test.imm = test.arg1;
+        test.rs = test.arg2;
+        test.memWrite = 0;
+        test.memRead = 1;
+        test.regWrite = 1;
+      }
+      
+      else if(strcmp(test.opcode, "sw") == 0){
+        test.rt = test.arg0;
+        test.imm = test.arg1;
+        test.rs = test.arg2;
+        test.memRead = 0;
+        test.regWrite = 0;
+        test.memWrite = 1;
+      }
+      else{
+        printf("%s", "Invalid function");
+        exit(0);
+      }
+      IDEX.validBit = 1;
+      IDEX.data = test;
+    }
   }
 }
 
@@ -397,60 +408,66 @@ void EX(){
   
   if(IDEX.validBit == 1){
     struct Instr test = IDEX.data;
+    IDEX.validBit = 0;
     
-    if(strcmp(test.opcode, "add")==0){
-      test.product = mips_reg[test.rs] + mips_reg[test.rt];
-    }
+    if (test.halt == 1) { // halt cleanup
+      EXMEM.data = test;
+      EXMEM.validBit = 1;
+      
+    } else {
     
-    else if(strcmp(test.opcode, "addi")==0){
-      test.product = mips_reg[test.rs] + test.imm;
-    }
-    
-    else if(strcmp(test.opcode, "sub")==0){
-      test.product = mips_reg[test.rs] - mips_reg[test.rt];
-    }
-    
-    else if(strcmp(test.opcode, "mul")==0){
-      test.product = mips_reg[test.rs] * mips_reg[test.rt];
-    }
-    
-    else if(strcmp(test.opcode, "beq")==0){
-      if(test.imm%(long)4 != 0){
-        printf("%s", "Immediate field not byte offset");
-        exit(0);
+      if(strcmp(test.opcode, "add")==0){
+        test.product = mips_reg[test.rs] + mips_reg[test.rt];
       }
-      else if(mips_reg[test.rs] == mips_reg[test.rt]){
-        int j = (test.imm)/(long)4;
-        PC = PC + j;
+      
+      else if(strcmp(test.opcode, "addi")==0){
+        test.product = mips_reg[test.rs] + test.imm;
       }
-    }
-    
-    else if(strcmp(test.opcode, "lw")==0){
-      if(test.imm%(long)4 != 0){
-        printf("%s", "Immediate field not byte offset");
-        exit(0);
+      
+      else if(strcmp(test.opcode, "sub")==0){
+        test.product = mips_reg[test.rs] - mips_reg[test.rt];
       }
-      else {
-        test.product = mips_reg[mips_reg[test.rs]] + (test.imm/(long)4);
+      
+      else if(strcmp(test.opcode, "mul")==0){
+        test.product = mips_reg[test.rs] * mips_reg[test.rt];
       }
-    }
-    else if(strcmp(test.opcode, "sw")==0){
-      if(test.imm%(long)4 != 0){
-        printf("%s", "Immediate field not byte offset");
-        exit(0);
+      
+      else if(strcmp(test.opcode, "beq")==0){
+        if(test.imm%(long)4 != 0){
+          printf("%s", "Immediate field not byte offset");
+          exit(0);
+        }
+        else if(mips_reg[test.rs] == mips_reg[test.rt]){
+          int j = (test.imm)/(long)4;
+          PC = PC + j;
+        }
+      }
+      
+      else if(strcmp(test.opcode, "lw")==0){
+        if(test.imm%(long)4 != 0){
+          printf("%s", "Immediate field not byte offset");
+          exit(0);
+        }
+        else {
+          test.product = mips_reg[mips_reg[test.rs]] + (test.imm/(long)4);
+        }
+      }
+      else if(strcmp(test.opcode, "sw")==0){
+        if(test.imm%(long)4 != 0){
+          printf("%s", "Immediate field not byte offset");
+          exit(0);
+        }
+        else{
+          test.product = mips_reg[test.rs] + (test.imm/(long)4);
+        }
       }
       else{
-        test.product = mips_reg[test.rs] + (test.imm/(long)4);
+        printf("%s", "Invalid function");
+        exit(0);
       }
+      EXMEM.validBit = 1;
+      EXMEM.data = test;
     }
-    else{
-      printf("%s", "Invalid function");
-      exit(0);
-    }
-    
-    IDEX.validBit = 0;
-    EXMEM.validBit = 1;
-    EXMEM.data = test;
   }
 }
 
@@ -458,31 +475,43 @@ void MEM(){ //INPUT LATCH: EXMEM ; OUTPUT LATCH = MEMWB
   
   if(EXMEM.validBit == 1) { //valid inst test
     struct Instr temp = EXMEM.data;
+    EXMEM.validBit = 0;
     
-    EXMEM.validBit = 0; //has been read and invalidated.
-    assert(!(temp.memWrite && temp.memRead));
-    
-    if(temp.memWrite == 1) {  //sw
-      assert(temp.memRead == 0);
-      mem_reg[temp.product%512] = mips_reg[temp.rt];
+    if (temp.halt == 1) { // halt cleanup
+      MEMWB.data = temp;
+      MEMWB.validBit = 1;
       
-    } else if(temp.memRead == 1) { //lw
-      assert(temp.memWrite == 0);
-      long holder = mem_reg[temp.product%512];
-      temp.product = holder; //memory value to be used in WB.
-    }
+    } else {
+      
+      assert(!(temp.memWrite && temp.memRead));
     
-    MEMWB.data = temp; //push instr into output latch
-    MEMWB.validBit = 1; //validates output latch
+      if(temp.memWrite == 1) {  //sw
+        assert(temp.memRead == 0);
+        mem_reg[temp.product%512] = mips_reg[temp.rt];
+      
+      } else if(temp.memRead == 1) { //lw
+        assert(temp.memWrite == 0);
+        long holder = mem_reg[temp.product%512];
+        temp.product = holder; //memory value to be used in WB.
+      }
+    
+      MEMWB.data = temp; //push instr into output latch
+      MEMWB.validBit = 1; //validates output latch
+    }
   }
 }
 
 void WB(){ //struct Latch MEMWB
-  if(MEMWB.validBit == 1) { //valid instruction
+  if (MEMWB.validBit == 1) { //valid instruction
     struct Instr temp = MEMWB.data;
     MEMWB.validBit = 0; //reads in and invalidates latch
     
-    if(temp.regWrite == 1) //valid to change mips_reg
-      mips_reg[temp.rd] = temp.product; //input from Mem written into destinate mips_reg
+    if (temp.halt == 1) { // halt cleanup
+      haltLatch.data = temp;
+      
+    } else {
+      if (temp.regWrite == 1) //valid to change mips_reg
+        mips_reg[temp.rd] = temp.product; //input from Mem written into destinate mips_reg
+    }
   }
 }
