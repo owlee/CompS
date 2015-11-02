@@ -23,20 +23,21 @@ struct Instr {
   int arg0, arg1, arg2;
   
   // Acutal Destinations of Instruction
-  char *opcode;
+  char opcode[4];
   int rs, rt, rd, imm;
   long product;
   int index;
+  int halt;
 };
 
 struct Latch {
   int validBit;
-  struct Instr *data; //instruction currently held
+  struct Instr data; //instruction currently held
 };
 
 // GLOBAL VARIABLES
 struct Instr instr_mem[512];  // 512 word size
-struct Latch IFID, IDEX, EXMEM, MEMWB;
+struct Latch IFID, IDEX, EXMEM, MEMWB, haltLatch;
 char buffer[40];
 long mips_reg[REG_NUM];
 long mem_reg[512];
@@ -107,25 +108,29 @@ int main (int argc, char *argv[]) {
     exit(0);
   }
   
-  //initialize registers and program counter
+  //initialize registers so displays as empty for single mode
   if (sim_mode == 1) {
     for (i=0;i<REG_NUM;i++){
       mips_reg[i]=0;
     }
   }
   
-  char *textInst = (char*) malloc(30);
-  strcpy(textInst, "./textInstructions.txt");
-  FILE *fp = fopen(textInst, "r");
-  
-  assert(fp!=NULL);
-  
   // OUR CODE
   if (sim_mode == 0) {  // batch cyclew
     
-    while (fgets(buffer, sizeof(buffer), input) != NULL) {
-      //WB();
-      //MEM();
+    while (1) {
+      
+      if(fgets(buffer, sizeof(buffer), input) == NULL) {
+        printf("Encountered an EOF error: Is haltSimulation present?");
+        exit(0);
+      }
+      
+      if(haltLatch.data.halt == 1) {  //checks for halt simulation
+        break;
+      }
+      
+      WB();
+      MEM();
       EX();
       ID();
       IF();
@@ -139,7 +144,7 @@ int main (int argc, char *argv[]) {
     fprintf(output,"stage utilization: %f  %f  %f  %f  %f \n", ifUtil, idUtil, exUtil, memUtil, wbUtil);
     // add the (double) stage_counter/sim_cycle for each
     // stage following sequence IF ID EX MEM WB
-      
+    
     fprintf(output,"register values ");
     for (i=1;i<REG_NUM;i++){
       fprintf(output,"%ld  ", mips_reg[i]);
@@ -168,8 +173,8 @@ int main (int argc, char *argv[]) {
       printf("press ENTER to continue\n");
       while (getchar() != '\n');
       
-      //WB();
-      //MEM();
+      WB();
+      MEM();
       EX();
       ID();
       IF();
@@ -189,16 +194,16 @@ void IF() {
   struct Instr instrObj = progScanner(buffer);
   
   IFID.validBit = 1;
-  IFID.data = &instrObj;
+  IFID.data = instrObj;
 }
 
-struct Instr progScanner(char* buffer) {
+struct Instr progScanner(char* in) {
   //do initial checks for extra characters (( )) or s and t followed by number
   
   // progScanner initially
   char delimiters[]=", \n$()"; // TODO: Maybe add the $ in here to be delimited
   char sanitize[40] = "";
-  char* token = strtok(buffer, delimiters);
+  char* token = strtok(in, delimiters);
   int tokenSize = 0;
   
   while (token != '\0') {
@@ -236,7 +241,10 @@ struct Instr progScanner(char* buffer) {
   // opcode
   struct Instr instrObj;
   //zeroOutInstr(instrObj);
-  instrObj.opcode = token;
+  
+  //instrObj.opcode = token;
+  //instrObj.opcode = "";
+  strcpy(instrObj.opcode, token);
   
   // arg0
   token = strtok(NULL, delimiters2);
@@ -308,7 +316,7 @@ int regConverter(char* str) {
 
 void ID() {
   if(IFID.validBit == 1){
-    struct Instr test = *(IFID.data);
+    struct Instr test = IFID.data;
     if(test.imm > 65535){
       printf("%s", "Immediate field is out of range");
       exit(0);
@@ -323,7 +331,7 @@ void ID() {
       test.regWrite = 1;
     }
     else if(strcmp(test.opcode, "addi") == 0){
-        test.rd = test.arg0;
+      test.rd = test.arg0;
       test.rs = test.arg1;
       test.imm = test.arg2;
       test.memRead = 0;
@@ -381,14 +389,14 @@ void ID() {
     
     IFID.validBit = 0;
     IDEX.validBit = 1;
-    IDEX.data = &test;
+    IDEX.data = test;
   }
 }
 
 void EX(){
   
   if(IDEX.validBit == 1){
-    struct Instr test = *IDEX.data;
+    struct Instr test = IDEX.data;
     
     if(strcmp(test.opcode, "add")==0){
       test.product = mips_reg[test.rs] + mips_reg[test.rt];
@@ -442,14 +450,14 @@ void EX(){
     
     IDEX.validBit = 0;
     EXMEM.validBit = 1;
-    EXMEM.data = &test;
+    EXMEM.data = test;
   }
 }
 
 void MEM(){ //INPUT LATCH: EXMEM ; OUTPUT LATCH = MEMWB
-
+  
   if(EXMEM.validBit == 1) { //valid inst test
-    struct Instr temp = *EXMEM.data;
+    struct Instr temp = EXMEM.data;
     
     EXMEM.validBit = 0; //has been read and invalidated.
     assert(!(temp.memWrite && temp.memRead));
@@ -464,14 +472,14 @@ void MEM(){ //INPUT LATCH: EXMEM ; OUTPUT LATCH = MEMWB
       temp.product = holder; //memory value to be used in WB.
     }
     
-    MEMWB.data = &temp; //push instr into output latch
+    MEMWB.data = temp; //push instr into output latch
     MEMWB.validBit = 1; //validates output latch
   }
 }
 
-void WBStage(){ //struct Latch MEMWB
+void WB(){ //struct Latch MEMWB
   if(MEMWB.validBit == 1) { //valid instruction
-    struct Instr temp = *MEMWB.data;
+    struct Instr temp = MEMWB.data;
     MEMWB.validBit = 0; //reads in and invalidates latch
     
     if(temp.regWrite == 1) //valid to change mips_reg
