@@ -5,9 +5,9 @@
 #include <ctype.h>
 
 struct Instr {
-  int regDst;
-  int aluSrc;
-  int aluOp;
+  // int regDst;
+  // int aluSrc;
+  // int aluOp;
   int memWrite;
   int memRead;
   int memToReg;
@@ -19,8 +19,8 @@ struct Instr {
   // Acutal Destinations of Instruction
   char *opcode;
   int rs, rt, rd, imm;
-  long *temp;
-};
+  long product;
+};s
 
 struct Latch {
   int validBit;
@@ -29,7 +29,7 @@ struct Latch {
 
 // GLOBAL VARIABLES
 struct Instr instr_mem[10];
-struct Latch start, IfId;
+struct Latch IFID, IDEX;
 char buffer[40];
 
 // GLOBAL FUNCTIONS
@@ -50,7 +50,6 @@ int main (int argc, char *argv[]) {
   while (fgets(buffer, sizeof(buffer), fp) != NULL) {
     IF();
   }
-  
   // END test Code
   
   fclose(fp);
