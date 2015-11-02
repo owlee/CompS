@@ -121,7 +121,7 @@ int main (int argc, char *argv[]) {
     while (1) {
       
       if(fgets(buffer, sizeof(buffer), input) == NULL) {
-        printf("Encountered an EOF error: Is haltSimulation present?");
+        printf("Encountered an EOF error: Is haltSimulation present?\n");
         exit(0);
       }
       
@@ -330,7 +330,7 @@ void ID() {
     } else {
         
       if(test.imm > 65535){
-        printf("%s", "Immediate field is out of range");
+        printf("%s", "Immediate field is out of range\n");
         exit(0);
       }
       
@@ -395,7 +395,7 @@ void ID() {
         test.memWrite = 1;
       }
       else{
-        printf("%s", "Invalid function");
+        printf("%s", "Invalid function\n");
         exit(0);
       }
       IDEX.validBit = 1;
@@ -434,7 +434,7 @@ void EX(){
       
       else if(strcmp(test.opcode, "beq")==0){
         if(test.imm%(long)4 != 0){
-          printf("%s", "Immediate field not byte offset");
+          printf("%s", "Immediate field not byte offset\n");
           exit(0);
         }
         else if(mips_reg[test.rs] == mips_reg[test.rt]){
@@ -445,7 +445,7 @@ void EX(){
       
       else if(strcmp(test.opcode, "lw")==0){
         if(test.imm%(long)4 != 0){
-          printf("%s", "Immediate field not byte offset");
+          printf("%s", "Immediate field not byte offset\n");
           exit(0);
         }
         else {
@@ -454,7 +454,7 @@ void EX(){
       }
       else if(strcmp(test.opcode, "sw")==0){
         if(test.imm%(long)4 != 0){
-          printf("%s", "Immediate field not byte offset");
+          printf("%s", "Immediate field not byte offset\n");
           exit(0);
         }
         else{
@@ -462,7 +462,7 @@ void EX(){
         }
       }
       else{
-        printf("%s", "Invalid function");
+        printf("%s", "Invalid function\n");
         exit(0);
       }
       EXMEM.validBit = 1;
