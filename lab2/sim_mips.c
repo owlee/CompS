@@ -376,6 +376,15 @@ void ID() {
         test.regWrite = 1;
         test.rt = test.rd;
       }
+      else if(strcmp(test.opcode, "addi\n") == 0){
+        test.rd = test.arg0;
+        test.rs = test.arg1;
+        test.imm = test.arg2;
+        test.memRead = 0;
+        test.memWrite = 0;
+        test.regWrite = 1;
+        test.rt = test.rd;
+      }
       else if(strcmp(test.opcode, "sub") == 0){
         test.rd = test.arg0;
         test.rs = test.arg1;
