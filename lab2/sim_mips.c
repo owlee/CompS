@@ -42,6 +42,8 @@ long mips_reg[REG_NUM];
 long mem_reg[512];
 double ifUtil=0, idUtil=0, exUtil=0, memUtil=0, wbUtil=0;
 int PC=0, c, m, n;
+int stallRAW;
+static int evaluation[32];
 
 // GLOBAL FUNCTIONS
 void IF();
@@ -51,6 +53,9 @@ void MEM();
 void WB();
 struct Instr progScanner(char *);
 int regConverter(char*);
+void resolveBranch();
+void resolveHazard();
+void hazardDetection();
 
 int main (int argc, char *argv[]) {
   int sim_mode=0;   // mode flag, 1 for single-cycle, 0 for batch
@@ -132,7 +137,10 @@ int main (int argc, char *argv[]) {
       MEM();
       EX();
       ID();
-      IF();
+      if ( stallRAW == 0){
+        IF();
+      }
+      
     }
     
     // ----- Code 3 -----
@@ -152,12 +160,15 @@ int main (int argc, char *argv[]) {
     
   } else {  // single cycle
     
-    while (fgets(buffer, sizeof(buffer), input) != NULL) {  // maybe && status == 1
-      // ----- Code 2 -----
-      // The following code will output the register
-      // value to screen at every cycle and wait for the ENTER key
-      // to be pressed; this will make it proceed to the next cycle
+      while (1) {
+      if (haltLatch.data.halt == 1) { break; }
       
+      WB();
+      MEM();
+      EX();
+      ID();
+      if ( stallRAW == 0){ IF(); }
+        
       printf("cycle: %ld ",sim_cycle);
       if(sim_mode==1){
         for (i=1;i<REG_NUM;i++){
@@ -171,12 +182,7 @@ int main (int argc, char *argv[]) {
       test_counter++;
       printf("press ENTER to continue\n");
       while (getchar() != '\n');
-      
-      WB();
-      MEM();
-      EX();
-      ID();
-      IF();
+        
     }
     
   }
@@ -188,8 +194,10 @@ int main (int argc, char *argv[]) {
 }
 
 void IF() {
+  
+  struct Instr instrObj = {0};
+
   if (instr_mem[PC] != NULL) {
-    struct Instr instrObj;
     
     if (strcmp(instr_mem[PC], "haltSimulation") == 0) {
       instrObj.halt = 1;
@@ -275,8 +283,14 @@ struct Instr progScanner(char* in) {
   }
   
   // arg2
-  token = strtok(NULL, delimiters2);
-  instrObj.arg2 = regConverter(token);
+  if (strcmp(instrObj.opcode, "addi") == 0) {
+    token = strtok(NULL, delimiters2);
+    instrObj.arg2 = atoi(token);
+  } else {
+    token = strtok(NULL, delimiters2);
+    instrObj.arg2 = regConverter(token);
+  }
+  
   
   return instrObj;
 }
@@ -322,9 +336,11 @@ int regConverter(char* str) {
   return ret;
 }
 
+
 void ID() {
   if (IFID.validBit == 1){
     struct Instr test = IFID.data;
+    test.imm = 0;
     IFID.validBit = 0;
     
     if (test.halt == 1) { // halt cleanup
@@ -332,12 +348,12 @@ void ID() {
       IDEX.validBit = 1;
       
     } else {
-        
+      
       if(test.imm > 65535){
+        printf("%s\n, %i\n", test.opcode, test.imm);
         printf("%s", "Immediate field is out of range\n");
         exit(0);
       }
-      
       if(strcmp(test.opcode, "add") == 0){
         test.rd = test.arg0;
         test.rs = test.arg1;
@@ -345,7 +361,10 @@ void ID() {
         test.memRead = 0;
         test.memWrite = 0;
         test.regWrite = 1;
+        hazardDetection(test);
+        resolveHazard(test);
       }
+      
       else if(strcmp(test.opcode, "addi") == 0){
         test.rd = test.arg0;
         test.rs = test.arg1;
@@ -353,6 +372,9 @@ void ID() {
         test.memRead = 0;
         test.memWrite = 0;
         test.regWrite = 1;
+        test.rt = test.rd;
+        hazardDetection(test);
+        resolveHazard(test);
       }
       else if(strcmp(test.opcode, "sub") == 0){
         test.rd = test.arg0;
@@ -361,8 +383,9 @@ void ID() {
         test.memRead = 0;
         test.memWrite = 0;
         test.regWrite = 1;
+        hazardDetection(test);
+        resolveHazard(test);
       }
-      
       else if(strcmp(test.opcode, "mul") == 0){
         test.rd = test.arg0;
         test.rs = test.arg1;
@@ -370,6 +393,8 @@ void ID() {
         test.memRead = 0;
         test.memWrite = 0;
         test.regWrite = 1;
+        hazardDetection(test);
+        resolveHazard(test);
       }
       
       else if(strcmp(test.opcode, "beq") == 0){
@@ -379,6 +404,10 @@ void ID() {
         test.memRead = 0;
         test.memWrite = 0;
         test.regWrite = 0;
+        test.rt = test.rs;
+        hazardDetection(test);
+        resolveHazard(test);
+        resolveBranch(test);
       }
       
       else if(strcmp(test.opcode, "lw") == 0){
@@ -388,8 +417,10 @@ void ID() {
         test.memWrite = 0;
         test.memRead = 1;
         test.regWrite = 1;
+        test.rt = test.rd;
+        hazardDetection(test);
+        resolveHazard(test);
       }
-      
       else if(strcmp(test.opcode, "sw") == 0){
         test.rt = test.arg0;
         test.imm = test.arg1;
@@ -397,13 +428,17 @@ void ID() {
         test.memRead = 0;
         test.regWrite = 0;
         test.memWrite = 1;
+        hazardDetection(test);
+        resolveHazard(test);
       }
+      
+      
       else{
         printf("%s", "Invalid function\n");
         exit(0);
       }
-      IDEX.validBit = 1;
-      IDEX.data = test;
+      
+      //IDEX.data = test;
       idUtil+=1;
     }
   }
@@ -430,7 +465,10 @@ void EX(){
         test.product = mips_reg[test.rs] + test.imm;
         exUtil+=n;
       }
-      
+      else if(strcmp(test.opcode, "addi\n")==0){
+        test.product = mips_reg[test.rs] + test.imm;
+        exUtil+=n;
+      }
       else if(strcmp(test.opcode, "sub")==0){
         test.product = mips_reg[test.rs] - mips_reg[test.rt];
         exUtil+=n;
@@ -442,6 +480,7 @@ void EX(){
       }
       
       else if(strcmp(test.opcode, "beq")==0){
+        stallRAW = 0;
         if(test.imm%(long)4 != 0){
           printf("%s", "Immediate field not byte offset\n");
           exit(0);
@@ -519,7 +558,9 @@ void WB(){ //struct Latch MEMWB
   if (MEMWB.validBit == 1) { //valid instruction
     struct Instr temp = MEMWB.data;
     MEMWB.validBit = 0; //reads in and invalidates latch
-    
+    stallRAW=0;
+    evaluation[temp.rs]=0;
+    evaluation[temp.rt]=0;
     if (temp.halt == 1) { // halt cleanup
       haltLatch.data = temp;
       
@@ -529,4 +570,44 @@ void WB(){ //struct Latch MEMWB
         wbUtil++;
     }
   }
+}
+
+
+void hazardDetection(struct Instr test){
+  if(MEMWB.validBit == 1){
+    struct Instr w = MEMWB.data;
+    if(test.rs == w.rd) {
+      evaluation[test.rs] = 1;
+    }
+    if (test.rt == w.rd) {
+      evaluation[test.rt] = 1;
+    }
+    
+  } else if(EXMEM.validBit == 1) {
+    struct Instr q = EXMEM.data;
+    if(test.rs == q.rd) {
+      evaluation[test.rs] = 1;
+    }
+    if (test.rt == q.rd) {
+      evaluation[test.rt] = 1;
+    }
+    
+    
+  }
+}
+
+void resolveHazard(struct Instr test){
+   if((evaluation[test.rs] || evaluation[test.rt]) == 1){
+     stallRAW = 1;
+     IDEX.validBit = 0;
+      }
+   else{
+     IDEX.validBit = 1;
+     stallRAW = 0;
+     IDEX.data = test;
+     IFID.validBit = 0;
+   }
+}
+void resolveBranch(struct Instr test){
+  stallRAW = 1;
 }
