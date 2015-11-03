@@ -57,7 +57,7 @@ int regConverter(char*);
 void ID(){
  
  if(IFID.validBit == 1){
-	struct Instr test = *(IFID.data);
+	struct Instr test = IFID.data;
 		
 	if(test.imm > 65535){
 			printf("%s", "Immediate field is out of range");
@@ -146,19 +146,15 @@ void ID(){
 	else{
 		printf("%s", "Invalid function");
 		exit(0);
-	}
-
-	
-	
+	}	
 }
 }
 
 
 void EX(){	
-	IFID.data = &instr_mem[PC];
-	struct Instr test;
+	
 	if(IDEX.validBit == 1){
-		test = *(IDEX.data);
+		struct Instr test = IDEX.data;
 	
 		if(strcmp(test.opcode, "add")==0){
 		test.product = mips_reg[test.rs] + mips_reg[test.rt];
